@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="RecordBloodPressure">血压录入</string>
+    <string name="RecordUricAcid">尿酸录入</string>
+    <string name="ViewBodyData">查看过往身体数据</string>
+    <string name="Help">帮助</string>
+</resources>
