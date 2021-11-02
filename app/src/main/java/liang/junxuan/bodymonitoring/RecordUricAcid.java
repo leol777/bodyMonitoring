@@ -7,15 +7,12 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 
-import java.util.Objects;
-import java.util.zip.Inflater;
-
-public class RecordBloodPressure extends AppCompatActivity {
+public class RecordUricAcid extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_record_blood_pressure);
+        setContentView(R.layout.activity_record_uric_acid);
     }
 
     @Override
@@ -23,8 +20,7 @@ public class RecordBloodPressure extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
-
-        actionBar.setTitle(R.string.record_blood_pressure_val);
+        actionBar.setTitle(R.string.record_uric_acid_val);
 
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.record_form_menu,menu);

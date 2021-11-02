@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/submit_icon"
+        android:icon="@drawable/ic_baseline_send_24"
+        android:title="@string/submission"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/record_view_body_data"
+        android:title="@string/view_historical_body_data"
+        />
+
+    <item
+        android:id="@+id/help_in_record"
+        android:title="@string/Help"
+        />
+
+
+</menu>

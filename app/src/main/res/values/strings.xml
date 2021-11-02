@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">身体数据记录</string>
+    <string name="uric_acid_val">尿酸值</string>
+    <string name="blood_sugar_val">血糖值</string>
+    <string name="blood_upper_pressure_val">上压</string>
+    <string name="blood_lower_pressure_val">下压</string>
+    <string name="submission">submission</string>
+    <string name="view_historical_body_data">查看过往身体数据</string>
+    <string name="record_uric_acid_val">录入尿酸数据</string>
+    <string name="record_blood_pressure_val">录入血压数据</string>
 </resources>
