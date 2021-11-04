@@ -4,6 +4,7 @@
     <string name="blood_sugar_val">血糖值</string>
     <string name="blood_upper_pressure_val">上压</string>
     <string name="blood_lower_pressure_val">下压</string>
+    <string name="hear_beat_val">心率</string>
     <string name="submission">submission</string>
     <string name="view_historical_body_data">查看过往身体数据</string>
     <string name="record_uric_acid_val">录入尿酸数据</string>

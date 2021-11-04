@@ -54,4 +54,29 @@
         android:layout_marginStart="20dp"
         />
 
+    <TextView
+        android:id="@+id/heart_beat_val_hint"
+        android:textSize="20sp"
+        android:text="@string/hear_beat_val"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/lower_bp_val_hint"
+        android:layout_marginTop="70dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="10dp"
+        />
+
+    <EditText
+        android:id="@+id/heart_beat_input"
+        android:textSize="20sp"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:background="#D3D3D3"
+        app:layout_constraintTop_toTopOf="@+id/heart_beat_val_hint"
+        app:layout_constraintStart_toEndOf="@id/heart_beat_val_hint"
+        android:layout_marginStart="20dp"
+        />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
