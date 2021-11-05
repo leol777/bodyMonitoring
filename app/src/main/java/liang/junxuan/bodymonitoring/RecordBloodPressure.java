@@ -1,13 +1,16 @@
 package liang.junxuan.bodymonitoring;
 
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.EditText;
 
 import java.util.Calendar;
@@ -19,15 +22,24 @@ import liang.junxuan.bodymonitoring.dataBase.bodyMonitordbHelper;
 public class RecordBloodPressure extends AppCompatActivity {
     private final static String TAG = "Record Blood Pressure";
 
-    private final EditText upperBpInput = findViewById(R.id.upper_bp_input);
-    private final EditText lowerBpInput = findViewById(R.id.lower_bp_input);
-    private final EditText heartBeatInput = findViewById(R.id.heart_beat_input);
+    private EditText upperBpInput;
+    private EditText lowerBpInput;
+    private EditText heartBeatInput;
 
     private bodyMonitordbHelper dBhelper;
+
+    public RecordBloodPressure() {
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record_blood_pressure);
+
+        upperBpInput = findViewById(R.id.upper_bp_input);
+        lowerBpInput = findViewById(R.id.lower_bp_input);
+        heartBeatInput = findViewById(R.id.heart_beat_input);
+
 
         dBhelper = new bodyMonitordbHelper(this, "BodyMonitoring.db", null, 1);
     }
@@ -45,6 +57,46 @@ public class RecordBloodPressure extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                this.finish();
+                return true;
+            case R.id.submit_icon:
+                confirmDialog();
+                return true;
+        }
+        return true;
+    }
+
+    private void confirmDialog(){
+        AlertDialog.Builder cd = new AlertDialog.Builder(this);
+
+        cd.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                submitBloodPressure();
+                dialog.dismiss();
+                RecordBloodPressure.this.finish();
+            }
+        });
+
+        cd.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        cd.setMessage("血压高压为："+upperBpInput.getText()+"mmHg\n"
+                +"血压低压为："+lowerBpInput.getText()+"mmHg\n"
+                +"心率为："+heartBeatInput.getText()+"bpm");
+
+        cd.setTitle("请确认您输入的血压信息是否准确？");
+        cd.show();
+    }
+
     private void submitBloodPressure(){
         int upperBP = Integer.parseInt(String.valueOf(upperBpInput.getText()));
         int lowerBP = Integer.parseInt(String.valueOf(lowerBpInput.getText()));
@@ -58,6 +110,6 @@ public class RecordBloodPressure extends AppCompatActivity {
 
         SQLiteDatabase db = dBhelper.getWritableDatabase();
         Log.i(TAG, bp.toContentValues().toString() + "--recorded");
-        //db.insert("BloodPressure",null,bp.toContentValues());
+        db.insert("BloodPressure",null,bp.toContentValues());
     }
 }
