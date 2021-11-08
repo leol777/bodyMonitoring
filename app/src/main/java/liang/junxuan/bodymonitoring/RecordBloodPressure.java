@@ -98,9 +98,28 @@ public class RecordBloodPressure extends AppCompatActivity {
     }
 
     private void submitBloodPressure(){
-        int upperBP = Integer.parseInt(String.valueOf(upperBpInput.getText()));
-        int lowerBP = Integer.parseInt(String.valueOf(lowerBpInput.getText()));
-        int heartBeat = Integer.parseInt(String.valueOf(heartBeatInput.getText()));
+        int upperBP;
+        if (!upperBpInput.getText().toString().equals("")){
+            upperBP = Integer.parseInt(String.valueOf(upperBpInput.getText()));
+        }else{
+            upperBP = -1;
+        }
+
+        int lowerBP;
+        if (!lowerBpInput.getText().toString().equals("")){
+            lowerBP = Integer.parseInt(String.valueOf(lowerBpInput.getText()));
+
+        }else{
+            lowerBP = -1;
+        }
+
+        int heartBeat;
+        if (!heartBeatInput.getText().toString().equals("")){
+            heartBeat = Integer.parseInt(String.valueOf(heartBeatInput.getText()));
+        }else {
+            heartBeat = -1;
+        }
+
 
         Calendar calendar = Calendar.getInstance();
         String dateTime = calendar.getTime().toString();
@@ -111,5 +130,6 @@ public class RecordBloodPressure extends AppCompatActivity {
         SQLiteDatabase db = dBhelper.getWritableDatabase();
         Log.i(TAG, bp.toContentValues().toString() + "--recorded");
         db.insert("BloodPressure",null,bp.toContentValues());
+        db.close();
     }
 }

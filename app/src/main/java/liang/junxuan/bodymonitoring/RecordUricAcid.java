@@ -38,7 +38,8 @@ public class RecordUricAcid extends AppCompatActivity {
         uricAcidInput = findViewById(R.id.uric_acid_input);
         bloodSugarInput = findViewById(R.id.blood_sugar_input);
 
-        dBhelper = new bodyMonitordbHelper(this, "BodyMonitor.db",null,1);
+        dBhelper = new bodyMonitordbHelper(this, "BodyMonitoring.db",null,1);
+
     }
 
     @Override
@@ -85,16 +86,27 @@ public class RecordUricAcid extends AppCompatActivity {
             }
         });
 
-        cd.setMessage("尿酸值为："+String.valueOf(uricAcidInput.getText())+"μmol/L\n"
-                        +"血糖值为："+String.valueOf(bloodSugarInput.getText())+"mmol/L");
+        cd.setMessage("尿酸值为："+ uricAcidInput.getText() +"μmol/L\n"
+                        +"血糖值为："+ bloodSugarInput.getText() +"mmol/L");
 
         cd.setTitle("请确认您输入的血液信息是否准确？");
         cd.show();
     }
 
     private void submitUricAcid(){
-        int uricAcidVal = Integer.parseInt(String.valueOf(uricAcidInput.getText()));
-        int bloodSugarVal = Integer.parseInt(String.valueOf(bloodSugarInput.getText()));
+        int uricAcidVal;
+        if (!uricAcidInput.getText().toString().equals("")){
+            uricAcidVal = Integer.parseInt(String.valueOf(uricAcidInput.getText()));
+        }else{
+            uricAcidVal = -1;
+        }
+
+        int bloodSugarVal;
+        if (!bloodSugarInput.getText().toString().equals("")){
+            bloodSugarVal = Integer.parseInt(String.valueOf(bloodSugarInput.getText()));
+        }else{
+            bloodSugarVal = -1;
+        }
 
         Calendar calendar = Calendar.getInstance();
         String dateTime = calendar.getTime().toString();
@@ -103,8 +115,12 @@ public class RecordUricAcid extends AppCompatActivity {
         ua.setBloodSugar(bloodSugarVal);
 
         SQLiteDatabase db = dBhelper.getWritableDatabase();
-        Log.i(TAG, ua.toContentValues().toString() + "--recorded");
-        db.insert("UricAcid", null, ua.toContentValues());
-
+        long result = db.insert("UricAcid", null, ua.toContentValues());
+        if (result == -1){
+            Log.i(TAG, "Insertion denied");
+        }else {
+            Log.i(TAG, ua.toContentValues().toString() + "--recorded");
+        }
+        db.close();
     }
 }

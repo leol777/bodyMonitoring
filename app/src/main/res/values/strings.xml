@@ -11,4 +11,8 @@
     <string name="record_blood_pressure_val">录入血压数据</string>
     <string name="confirm">确定</string>
     <string name="cancel">取消</string>
+    <string name="uric_acid_unit">μmol/L</string>
+    <string name="blood_sugar_unit">mmol/L</string>
+    <string name="blood_pressure_unit">mmHg</string>
+    <string name="heart_beat_unit">bpm</string>
 </resources>
