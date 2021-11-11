@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/edit_historical_data"
+        android:title="@string/edit"
+        />
+
+    <item
+        android:id="@+id/help_in_view_data"
+        android:title="@string/Help"
+        />
+</menu>

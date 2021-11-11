@@ -1,5 +1,7 @@
 package liang.junxuan.bodymonitoring;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.net.UriCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -10,6 +12,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.strictmode.SqliteObjectLeakedViolation;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +34,27 @@ public class ViewBodyData extends AppCompatActivity {
 
         dbHelper = new bodyMonitordbHelper(ViewBodyData.this,"BodyMonitoring.db",null,1);
 
-        RecyclerView recyclerView = findViewById(R.id.blood_pressure_recycler_view);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        uaRecyclerViewAdapter adapter = new uaRecyclerViewAdapter(findAllUA());
-        recyclerView.setAdapter(adapter);
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle(R.string.view_historical_body_data);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        MenuInflater inflater = new MenuInflater(ViewBodyData.this);
+        inflater.inflate(R.menu.view_data_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return true;
     }
 
     private ArrayList<bloodPressure> findAllBP(){

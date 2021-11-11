@@ -6,20 +6,39 @@
     android:layout_height="match_parent"
     tools:context=".ViewBodyData">
 
-    <androidx.recyclerview.widget.RecyclerView
+    <FrameLayout
+        android:id="@+id/view_data_fl_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/blood_pressure_recycler_view"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        android:layout_height="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
-    </androidx.recyclerview.widget.RecyclerView>
-
-    <androidx.recyclerview.widget.RecyclerView
+    <RadioGroup
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/uric_acid_recycler_view"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="@id/view_data_fl_container"
+        app:layout_constraintTop_toTopOf="@+id/view_data_fl_container">
+
+        <RadioButton
+            android:id="@+id/view_bp_radio_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:button="@null"
+            android:drawableTop="@drawable/tab_pic_selector"
+            android:text="@string/blood_pressure_history"
+            android:textColor="@drawable/tab_word_selector"
+            style="@style/button_tag_style"/>
+
+        <RadioButton
+            android:id="@+id/view_ua_radio_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:button="@null"
+            android:drawableTop="@drawable/tab_pic_selector"
+            android:text="@string/uric_acid_history"
+            android:textColor="@drawable/tab_word_selector"
+            style="@style/button_tag_style"/>
+    </RadioGroup>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

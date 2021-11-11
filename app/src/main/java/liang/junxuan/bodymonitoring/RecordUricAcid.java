@@ -6,6 +6,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.renderscript.Sampler;
@@ -63,6 +64,9 @@ public class RecordUricAcid extends AppCompatActivity {
             case R.id.submit_icon:
                 confirmDialog();
                 return true;
+            case R.id.record_view_body_data:
+                Intent intent = new Intent(RecordUricAcid.this, ViewBodyData.class);
+                startActivity(intent);
         }
         return true;
     }

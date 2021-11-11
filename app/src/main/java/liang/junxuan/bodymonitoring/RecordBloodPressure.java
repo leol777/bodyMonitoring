@@ -5,6 +5,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
@@ -60,12 +61,15 @@ public class RecordBloodPressure extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case android.R.id.home:
+            case R.id.home:
                 this.finish();
                 return true;
             case R.id.submit_icon:
                 confirmDialog();
                 return true;
+            case R.id.record_view_body_data:
+                Intent intent = new Intent(RecordBloodPressure.this, ViewBodyData.class);
+                startActivity(intent);
         }
         return true;
     }
