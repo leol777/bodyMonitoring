@@ -16,29 +16,35 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RadioButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import liang.junxuan.bodymonitoring.fragment.ViewBPTableFragment;
+import liang.junxuan.bodymonitoring.fragment.ViewUATableFragment;
 import liang.junxuan.bodymonitoring.item.*;
 import liang.junxuan.bodymonitoring.dataBase.bodyMonitordbHelper;
 import liang.junxuan.bodymonitoring.adapter.*;
 
-public class ViewBodyData extends AppCompatActivity {
-    private bodyMonitordbHelper dbHelper;
+public class ViewBodyData extends AppCompatActivity implements View.OnClickListener{
+
+    private ViewUATableFragment uaTableFragment;
+    private ViewBPTableFragment bpTableFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_body_data);
 
-        dbHelper = new bodyMonitordbHelper(ViewBodyData.this,"BodyMonitoring.db",null,1);
-
+        bindViews();
+        initData();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
         actionBar.setTitle(R.string.view_historical_body_data);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
@@ -57,50 +63,33 @@ public class ViewBodyData extends AppCompatActivity {
         return true;
     }
 
-    private ArrayList<bloodPressure> findAllBP(){
-        ArrayList<bloodPressure> list = new ArrayList<>();
-
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query("BloodPressure", null, null, null, null, null, null);
-
-        if (cursor.moveToNext()){
-            do {int up = cursor.getInt(cursor.getColumnIndex("upperBP"));
-                int low = cursor.getInt(cursor.getColumnIndex("lowerBP"));
-                int hb = cursor.getInt(cursor.getColumnIndex("heartBeat"));
-                String dateTime = cursor.getString(cursor.getColumnIndex("dateTime"));
-
-                bloodPressure item = new bloodPressure(dateTime, up, low);
-                item.setHeartBeat(hb);
-
-                list.add(item);
-            }while (cursor.moveToNext());
-        }
-        cursor.close();
-        return list;
+    private void initData(){
+        uaTableFragment = new ViewUATableFragment();
+        bpTableFragment = new ViewBPTableFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.view_data_fl_container
+                ,bpTableFragment).commit();
     }
 
-    private ArrayList<uricAcid> findAllUA(){
-        ArrayList<uricAcid> list = new ArrayList<>();
+    private void bindViews(){
+        RadioButton rb_bp = findViewById(R.id.view_bp_radio_button);
+        RadioButton rb_ua = findViewById(R.id.view_ua_radio_button);
 
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query("UricAcid", null, null, null, null, null, null);
-        if (!cursor.moveToFirst()){
-            Log.i("ViewBodyData", "Empty list");
-        }
+        rb_bp.setChecked(true);
 
-        if (cursor.moveToNext()){
-            do {int ua = cursor.getInt(cursor.getColumnIndex("uricAcid"));
-                int bs = cursor.getInt(cursor.getColumnIndex("bloodSugar"));
-                String dateTime = cursor.getString(cursor.getColumnIndex("dateTime"));
-
-                uricAcid item = new uricAcid(dateTime, ua);
-                item.setBloodSugar(bs);
-
-                list.add(item);
-            }while (cursor.moveToNext());
-        }
-        Log.d("ViewBodyData",list.toString());
-        cursor.close();
-        return list;
+        rb_bp.setOnClickListener(this);
+        rb_ua.setOnClickListener(this);
     }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.view_bp_radio_button){
+            getSupportFragmentManager().beginTransaction().replace(R.id.view_data_fl_container
+                ,bpTableFragment).commit();
+        }else if (v.getId() == R.id.view_ua_radio_button){
+            getSupportFragmentManager().beginTransaction().replace(R.id.view_data_fl_container
+                ,uaTableFragment).commit();
+        }
+    }
+
+
 }
