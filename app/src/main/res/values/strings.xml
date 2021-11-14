@@ -18,4 +18,5 @@
     <string name="blood_pressure_history">血压记录</string>
     <string name="uric_acid_history">尿酸记录</string>
     <string name="edit">编辑</string>
+    <attr name="date_base_name">BodyMonitoring.db</attr>
 </resources>

@@ -23,6 +23,7 @@ import liang.junxuan.bodymonitoring.ViewBodyData;
 import liang.junxuan.bodymonitoring.adapter.bpRecyclerViewAdapter;
 import liang.junxuan.bodymonitoring.dataBase.bodyMonitordbHelper;
 import liang.junxuan.bodymonitoring.item.bloodPressure;
+import liang.junxuan.bodymonitoring.util.dbFinder;
 
 public class ViewBPTableFragment extends Fragment {
     private bodyMonitordbHelper dbHelper;
@@ -33,8 +34,10 @@ public class ViewBPTableFragment extends Fragment {
         dbHelper = new bodyMonitordbHelper(getActivity(), "BodyMonitoring.db", null, 1);
         View rootView = loadRootView(inflater, container);
 
+        dbFinder db_finder = new dbFinder(dbHelper);
+
         RecyclerView recyclerView = rootView.findViewById(R.id.blood_pressure_recycler_view);
-        bpRecyclerViewAdapter adapter = new bpRecyclerViewAdapter(findAllBP());
+        bpRecyclerViewAdapter adapter = new bpRecyclerViewAdapter(db_finder.findAllBP());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
@@ -46,27 +49,6 @@ public class ViewBPTableFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_view_blood_pressure, container, false);
     }
 
-    private ArrayList<bloodPressure> findAllBP(){
-        ArrayList<bloodPressure> list = new ArrayList<>();
-
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query("BloodPressure", null, null, null, null, null, null);
-
-        if (cursor.moveToNext()){
-            do {int up = cursor.getInt(cursor.getColumnIndex("upperBP"));
-                int low = cursor.getInt(cursor.getColumnIndex("lowerBP"));
-                int hb = cursor.getInt(cursor.getColumnIndex("heartBeat"));
-                String dateTime = cursor.getString(cursor.getColumnIndex("dateTime"));
-
-                bloodPressure item = new bloodPressure(dateTime, up, low);
-                item.setHeartBeat(hb);
-
-                list.add(item);
-            }while (cursor.moveToNext());
-        }
-        cursor.close();
-        return list;
-    }
 
 
 

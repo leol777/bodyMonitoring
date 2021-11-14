@@ -2,6 +2,11 @@ package liang.junxuan.bodymonitoring.item;
 
 import android.content.ContentValues;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class uricAcid {
     private int uricAcid;
     private int bloodSugar;
@@ -35,5 +40,10 @@ public class uricAcid {
         values.put("bloodSugar", bloodSugar);
 
         return values;
+    }
+
+    public Date getDateTimeInDate() throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+        return sdf.parse(this.getDate_time());
     }
 }

@@ -3,6 +3,11 @@ package liang.junxuan.bodymonitoring.item;
 import android.content.ContentValues;
 import android.text.PrecomputedText;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class bloodPressure {
     private int upperPressure;
     private int lowerPressure;
@@ -43,5 +48,10 @@ public class bloodPressure {
         values.put("heartBeat", heartBeat);
 
         return values;
+    }
+
+    public Date getDateTimeInDate() throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+        return sdf.parse(this.getDateTime());
     }
 }

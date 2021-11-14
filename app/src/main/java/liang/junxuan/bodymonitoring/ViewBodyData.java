@@ -21,7 +21,9 @@ import android.widget.RadioButton;
 import java.util.ArrayList;
 import java.util.List;
 
+import liang.junxuan.bodymonitoring.fragment.ViewBPGraphFragment;
 import liang.junxuan.bodymonitoring.fragment.ViewBPTableFragment;
+import liang.junxuan.bodymonitoring.fragment.ViewUAGraphFragment;
 import liang.junxuan.bodymonitoring.fragment.ViewUATableFragment;
 import liang.junxuan.bodymonitoring.item.*;
 import liang.junxuan.bodymonitoring.dataBase.bodyMonitordbHelper;
@@ -31,6 +33,8 @@ public class ViewBodyData extends AppCompatActivity implements View.OnClickListe
 
     private ViewUATableFragment uaTableFragment;
     private ViewBPTableFragment bpTableFragment;
+    private ViewUAGraphFragment uaGraphFragment;
+    private ViewBPGraphFragment bpGraphFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +70,9 @@ public class ViewBodyData extends AppCompatActivity implements View.OnClickListe
     private void initData(){
         uaTableFragment = new ViewUATableFragment();
         bpTableFragment = new ViewBPTableFragment();
+        uaGraphFragment = new ViewUAGraphFragment();
+        bpGraphFragment = new ViewBPGraphFragment();
+
         getSupportFragmentManager().beginTransaction().replace(R.id.view_data_fl_container
                 ,bpTableFragment).commit();
     }
@@ -84,10 +91,10 @@ public class ViewBodyData extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         if (v.getId() == R.id.view_bp_radio_button){
             getSupportFragmentManager().beginTransaction().replace(R.id.view_data_fl_container
-                ,bpTableFragment).commit();
+                ,bpGraphFragment).commit();
         }else if (v.getId() == R.id.view_ua_radio_button){
             getSupportFragmentManager().beginTransaction().replace(R.id.view_data_fl_container
-                ,uaTableFragment).commit();
+                ,uaGraphFragment).commit();
         }
     }
 

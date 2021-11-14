@@ -28,6 +28,7 @@ import liang.junxuan.bodymonitoring.adapter.uaRecyclerViewAdapter;
 import liang.junxuan.bodymonitoring.dataBase.bodyMonitordbHelper;
 import liang.junxuan.bodymonitoring.item.bloodPressure;
 import liang.junxuan.bodymonitoring.item.uricAcid;
+import liang.junxuan.bodymonitoring.util.dbFinder;
 
 public class ViewUATableFragment extends Fragment {
     private bodyMonitordbHelper dbHelper;
@@ -38,8 +39,10 @@ public class ViewUATableFragment extends Fragment {
         dbHelper = new bodyMonitordbHelper(getActivity(), "BodyMonitoring.db", null, 1);
         View rootView = loadRootView(inflater, container);
 
+        dbFinder db_finder = new dbFinder(dbHelper);
+
         RecyclerView recyclerView = rootView.findViewById(R.id.uric_acid_recycler_view);
-        uaRecyclerViewAdapter adapter = new uaRecyclerViewAdapter(findAllUA());
+        uaRecyclerViewAdapter adapter = new uaRecyclerViewAdapter(db_finder.findAllUA());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
@@ -51,30 +54,6 @@ public class ViewUATableFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_view_uric_acid, container, false);
     }
 
-    private ArrayList<uricAcid> findAllUA(){
-        ArrayList<uricAcid> list = new ArrayList<>();
-
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query("UricAcid", null, null, null, null, null, null);
-        if (!cursor.moveToFirst()){
-            Log.i("ViewBodyData", "Empty list");
-        }
-
-        if (cursor.moveToNext()){
-            do {int ua = cursor.getInt(cursor.getColumnIndex("uricAcid"));
-                int bs = cursor.getInt(cursor.getColumnIndex("bloodSugar"));
-                String dateTime = cursor.getString(cursor.getColumnIndex("dateTime"));
-
-                uricAcid item = new uricAcid(dateTime, ua);
-                item.setBloodSugar(bs);
-
-                list.add(item);
-            }while (cursor.moveToNext());
-        }
-        Log.d("ViewBodyData",list.toString());
-        cursor.close();
-        return list;
-    }
 
 
 }
