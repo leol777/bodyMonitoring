@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.strictmode.SqliteObjectLeakedViolation;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,6 +36,11 @@ public class ViewBodyData extends AppCompatActivity implements View.OnClickListe
     private ViewBPTableFragment bpTableFragment;
     private ViewUAGraphFragment uaGraphFragment;
     private ViewBPGraphFragment bpGraphFragment;
+
+    private RadioButton rb_table;
+    private RadioButton rb_graph;
+    private RadioButton rb_bp;
+    private RadioButton rb_ua;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,10 +84,17 @@ public class ViewBodyData extends AppCompatActivity implements View.OnClickListe
     }
 
     private void bindViews(){
-        RadioButton rb_bp = findViewById(R.id.view_bp_radio_button);
-        RadioButton rb_ua = findViewById(R.id.view_ua_radio_button);
+        rb_table = findViewById(R.id.view_table_radio_button);
+        rb_graph = findViewById(R.id.view_graph_radio_button);
 
+        rb_bp = findViewById(R.id.view_bp_radio_button);
+        rb_ua = findViewById(R.id.view_ua_radio_button);
+
+        rb_table.setChecked(true);
         rb_bp.setChecked(true);
+
+        rb_table.setOnClickListener(this);
+        rb_graph.setOnClickListener(this);
 
         rb_bp.setOnClickListener(this);
         rb_ua.setOnClickListener(this);
@@ -90,11 +103,37 @@ public class ViewBodyData extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.view_bp_radio_button){
-            getSupportFragmentManager().beginTransaction().replace(R.id.view_data_fl_container
-                ,bpGraphFragment).commit();
+            if (rb_table.isChecked()){
+                getSupportFragmentManager().beginTransaction().replace(R.id.view_data_fl_container
+                        ,bpTableFragment).commit();
+            }else if (rb_graph.isChecked()){
+                getSupportFragmentManager().beginTransaction().replace(R.id.view_data_fl_container
+                        ,bpGraphFragment).commit();
+            }
         }else if (v.getId() == R.id.view_ua_radio_button){
-            getSupportFragmentManager().beginTransaction().replace(R.id.view_data_fl_container
-                ,uaGraphFragment).commit();
+            if (rb_table.isChecked()){
+                getSupportFragmentManager().beginTransaction().replace(R.id.view_data_fl_container
+                        ,uaTableFragment).commit();
+            }else if (rb_graph.isChecked()){
+                getSupportFragmentManager().beginTransaction().replace(R.id.view_data_fl_container
+                        ,uaGraphFragment).commit();
+            }
+        }else if (v.getId() == R.id.view_graph_radio_button){
+            if (rb_bp.isChecked()){
+                getSupportFragmentManager().beginTransaction().replace(R.id.view_data_fl_container
+                        ,bpGraphFragment).commit();
+            }else if (rb_ua.isChecked()){
+                getSupportFragmentManager().beginTransaction().replace(R.id.view_data_fl_container
+                        ,uaGraphFragment).commit();
+            }
+        }else if (v.getId() == R.id.view_table_radio_button){
+            if (rb_bp.isChecked()){
+                getSupportFragmentManager().beginTransaction().replace(R.id.view_data_fl_container
+                        ,bpTableFragment).commit();
+            }else if (rb_ua.isChecked()){
+                getSupportFragmentManager().beginTransaction().replace(R.id.view_data_fl_container
+                        ,uaTableFragment).commit();
+            }
         }
     }
 

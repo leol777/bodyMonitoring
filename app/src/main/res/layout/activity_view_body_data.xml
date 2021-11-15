@@ -7,16 +7,41 @@
     android:orientation="vertical"
     tools:context=".ViewBodyData">
 
+    <RadioGroup
+        android:id="@+id/view_data_presentation_button_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RadioButton
+            android:id="@+id/view_table_radio_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:button="@null"
+            android:text="@string/content_in_table"
+            style="@style/choose_style_button_tag_style"/>
+
+        <RadioButton
+            android:id="@+id/view_graph_radio_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:button="@null"
+            android:text="@string/content_in_graph"
+            style="@style/choose_style_button_tag_style"/>
+    </RadioGroup>
+
+
 
     <FrameLayout
         android:id="@+id/view_data_fl_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/view_data_button_group"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/view_data_type_button_group"
+        app:layout_constraintTop_toBottomOf="@id/view_data_presentation_button_group" />
 
     <RadioGroup
-        android:id="@+id/view_data_button_group"
+        android:id="@+id/view_data_type_button_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
