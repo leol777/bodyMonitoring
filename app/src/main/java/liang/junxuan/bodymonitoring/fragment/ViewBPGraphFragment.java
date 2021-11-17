@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.DataPointInterface;
@@ -19,7 +18,6 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.OnDataPointTapListener;
 import com.jjoe64.graphview.series.Series;
 
-import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,20 +25,20 @@ import java.util.Date;
 import java.util.Locale;
 
 import liang.junxuan.bodymonitoring.R;
-import liang.junxuan.bodymonitoring.dataBase.bodyMonitordbHelper;
-import liang.junxuan.bodymonitoring.item.bloodPressure;
+import liang.junxuan.bodymonitoring.dataBase.BodyMonitordbHelper;
+import liang.junxuan.bodymonitoring.item.BloodPressure;
 import liang.junxuan.bodymonitoring.util.BodyMonitorDataPoint;
-import liang.junxuan.bodymonitoring.util.dbFinder;
+import liang.junxuan.bodymonitoring.util.DBManager;
 
 public class ViewBPGraphFragment extends Fragment {
-    private bodyMonitordbHelper dbHelper;
-    private dbFinder finder;
+    private BodyMonitordbHelper dbHelper;
+    private DBManager finder;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        dbHelper = new bodyMonitordbHelper(getActivity(), "BodyMonitoring.db", null, 1);
-        finder = new dbFinder(dbHelper);
+        dbHelper = new BodyMonitordbHelper(getActivity(), "BodyMonitoring.db", null, 1);
+        finder = new DBManager(dbHelper);
         View root_view = loadRootView(inflater, container);
 
         GraphView graphView = root_view.findViewById(R.id.view_bp_graph_view);
@@ -59,7 +57,7 @@ public class ViewBPGraphFragment extends Fragment {
     }
 
     private void drawAllBP(GraphView graphView) throws ParseException {
-        ArrayList<bloodPressure> list = finder.findAllBP();
+        ArrayList<BloodPressure> list = finder.findAllBP();
         LineGraphSeries<DataPoint> lower_series = new LineGraphSeries<>();
         LineGraphSeries<DataPoint> upper_series = new LineGraphSeries<>();
 
@@ -69,7 +67,7 @@ public class ViewBPGraphFragment extends Fragment {
         upper_series.appendData(dummy_dp, false, list.size()+1);
 
         int i = 1;
-        for (bloodPressure item : list){
+        for (BloodPressure item : list){
             BodyMonitorDataPoint low_dp = new BodyMonitorDataPoint(i, item.getLowerPressure());
             low_dp.setDateTime(item.getDateTimeInDate());
             BodyMonitorDataPoint up_dp = new BodyMonitorDataPoint(i, item.getUpperPressure());

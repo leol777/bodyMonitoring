@@ -24,21 +24,21 @@ import java.util.Date;
 import java.util.Locale;
 
 import liang.junxuan.bodymonitoring.R;
-import liang.junxuan.bodymonitoring.dataBase.bodyMonitordbHelper;
+import liang.junxuan.bodymonitoring.dataBase.BodyMonitordbHelper;
 import liang.junxuan.bodymonitoring.util.BodyMonitorDataPoint;
-import liang.junxuan.bodymonitoring.util.dbFinder;
-import liang.junxuan.bodymonitoring.item.uricAcid;
+import liang.junxuan.bodymonitoring.util.DBManager;
+import liang.junxuan.bodymonitoring.item.UricAcid;
 
 public class ViewUAGraphFragment extends Fragment {
-    private bodyMonitordbHelper dbHelper;
-    private dbFinder finder;
+    private BodyMonitordbHelper dbHelper;
+    private DBManager finder;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        dbHelper = new bodyMonitordbHelper(getActivity(), "BodyMonitoring.db", null, 1);
+        dbHelper = new BodyMonitordbHelper(getActivity(), "BodyMonitoring.db", null, 1);
         View root_view = loadRootView(inflater, container);
-        finder = new dbFinder(dbHelper);
+        finder = new DBManager(dbHelper);
 
         GraphView graphView = root_view.findViewById(R.id.view_ua_graph_view);
 
@@ -56,7 +56,7 @@ public class ViewUAGraphFragment extends Fragment {
     }
 
     private void drawAllUA(GraphView graphView) throws ParseException {
-        ArrayList<uricAcid> list = finder.findAllUA();
+        ArrayList<UricAcid> list = finder.findAllUA();
         LineGraphSeries<DataPoint> series = new LineGraphSeries<>();
 
         //Dummy variable to avoid untagable first point bug
@@ -64,7 +64,7 @@ public class ViewUAGraphFragment extends Fragment {
         series.appendData(dummy_dp, true, list.size()+1);
 
         int i = 1;
-        for (uricAcid item : list){
+        for (UricAcid item : list){
             BodyMonitorDataPoint dp = new BodyMonitorDataPoint(i,item.getUricAcid());
             dp.setDateTime(item.getDateTimeInDate());
             series.appendData(dp,true,list.size()+1);

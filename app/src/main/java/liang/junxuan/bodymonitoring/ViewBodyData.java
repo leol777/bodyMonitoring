@@ -1,34 +1,19 @@
 package liang.junxuan.bodymonitoring;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.net.UriCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.os.strictmode.SqliteObjectLeakedViolation;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RadioButton;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import liang.junxuan.bodymonitoring.fragment.ViewBPGraphFragment;
 import liang.junxuan.bodymonitoring.fragment.ViewBPTableFragment;
 import liang.junxuan.bodymonitoring.fragment.ViewUAGraphFragment;
 import liang.junxuan.bodymonitoring.fragment.ViewUATableFragment;
-import liang.junxuan.bodymonitoring.item.*;
-import liang.junxuan.bodymonitoring.dataBase.bodyMonitordbHelper;
-import liang.junxuan.bodymonitoring.adapter.*;
 
 public class ViewBodyData extends AppCompatActivity implements View.OnClickListener{
 

@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
 
-public class bodyMonitordbHelper extends SQLiteOpenHelper {
+public class BodyMonitordbHelper extends SQLiteOpenHelper {
     private static final String TAG = "bodyMonitorDataBse";
 
     public static final String CREATE_URIC_ACID = "create table UricAcid(" +
@@ -25,7 +25,7 @@ public class bodyMonitordbHelper extends SQLiteOpenHelper {
 
     private Context mContext;
 
-    public bodyMonitordbHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version){
+    public BodyMonitordbHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version){
         super(context, name, factory, version);
         mContext = context;
     }

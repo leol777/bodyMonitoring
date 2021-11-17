@@ -13,12 +13,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.Calendar;
-import java.util.concurrent.BlockingDeque;
 
-import liang.junxuan.bodymonitoring.item.bloodPressure;
-import liang.junxuan.bodymonitoring.dataBase.bodyMonitordbHelper;
+import liang.junxuan.bodymonitoring.item.BloodPressure;
+import liang.junxuan.bodymonitoring.dataBase.BodyMonitordbHelper;
+import liang.junxuan.bodymonitoring.util.DBManager;
 
 public class RecordBloodPressure extends AppCompatActivity {
     private final static String TAG = "Record Blood Pressure";
@@ -27,7 +28,7 @@ public class RecordBloodPressure extends AppCompatActivity {
     private EditText lowerBpInput;
     private EditText heartBeatInput;
 
-    private bodyMonitordbHelper dBhelper;
+    private BodyMonitordbHelper dBhelper;
 
     public RecordBloodPressure() {
     }
@@ -42,7 +43,7 @@ public class RecordBloodPressure extends AppCompatActivity {
         heartBeatInput = findViewById(R.id.heart_beat_input);
 
 
-        dBhelper = new bodyMonitordbHelper(this, "BodyMonitoring.db", null, 1);
+        dBhelper = new BodyMonitordbHelper(this, "BodyMonitoring.db", null, 1);
     }
 
     @Override
@@ -80,7 +81,12 @@ public class RecordBloodPressure extends AppCompatActivity {
         cd.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                submitBloodPressure();
+                try {
+                    submitBloodPressure();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(RecordBloodPressure.this, "创建血压记录失败", Toast.LENGTH_SHORT).show();
+                }
                 dialog.dismiss();
                 RecordBloodPressure.this.finish();
             }
@@ -101,7 +107,7 @@ public class RecordBloodPressure extends AppCompatActivity {
         cd.show();
     }
 
-    private void submitBloodPressure(){
+    private void submitBloodPressure() throws Exception {
         int upperBP;
         if (!upperBpInput.getText().toString().equals("")){
             upperBP = Integer.parseInt(String.valueOf(upperBpInput.getText()));
@@ -128,12 +134,10 @@ public class RecordBloodPressure extends AppCompatActivity {
         Calendar calendar = Calendar.getInstance();
         String dateTime = calendar.getTime().toString();
 
-        bloodPressure bp = new bloodPressure(dateTime, upperBP, lowerBP);
+        BloodPressure bp = new BloodPressure(dateTime, upperBP, lowerBP);
         bp.setHeartBeat(heartBeat);
 
-        SQLiteDatabase db = dBhelper.getWritableDatabase();
-        Log.i(TAG, bp.toContentValues().toString() + "--recorded");
-        db.insert("BloodPressure",null,bp.toContentValues());
-        db.close();
+        DBManager dbManager = new DBManager(dBhelper);
+        dbManager.addBP(bp);
     }
 }

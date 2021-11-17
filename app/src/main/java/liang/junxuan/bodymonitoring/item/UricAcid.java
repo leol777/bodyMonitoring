@@ -7,12 +7,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class uricAcid {
+public class UricAcid {
     private int uricAcid;
     private int bloodSugar;
     private String date_time;
+    private int id;
 
-    public uricAcid(String dt, int uaVal){
+    public UricAcid(String dt, int uaVal){
         uricAcid = uaVal;
         date_time = dt;
     }
@@ -31,6 +32,14 @@ public class uricAcid {
 
     public String getDate_time(){
         return date_time;
+    }
+
+    public void setId(int id){
+        this.id = id;
+    }
+
+    public int getId(){
+        return id;
     }
 
     public ContentValues toContentValues(){

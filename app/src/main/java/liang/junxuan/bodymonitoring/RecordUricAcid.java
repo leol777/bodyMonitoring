@@ -1,6 +1,5 @@
 package liang.junxuan.bodymonitoring;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,20 +8,18 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.renderscript.Sampler;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.Calendar;
-import java.util.Date;
 
-import liang.junxuan.bodymonitoring.dataBase.bodyMonitordbHelper;
-import liang.junxuan.bodymonitoring.item.uricAcid;
+import liang.junxuan.bodymonitoring.dataBase.BodyMonitordbHelper;
+import liang.junxuan.bodymonitoring.item.UricAcid;
+import liang.junxuan.bodymonitoring.util.DBManager;
 
 public class RecordUricAcid extends AppCompatActivity {
     private final static String TAG = "Record Uric Acid";
@@ -30,7 +27,7 @@ public class RecordUricAcid extends AppCompatActivity {
     private EditText uricAcidInput;
     private EditText bloodSugarInput;
 
-    private  bodyMonitordbHelper dBhelper;
+    private BodyMonitordbHelper dBhelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +36,7 @@ public class RecordUricAcid extends AppCompatActivity {
         uricAcidInput = findViewById(R.id.uric_acid_input);
         bloodSugarInput = findViewById(R.id.blood_sugar_input);
 
-        dBhelper = new bodyMonitordbHelper(this, "BodyMonitoring.db",null,1);
+        dBhelper = new BodyMonitordbHelper(this, "BodyMonitoring.db",null,1);
 
     }
 
@@ -77,7 +74,12 @@ public class RecordUricAcid extends AppCompatActivity {
         cd.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                submitUricAcid();
+                try {
+                    submitUricAcid();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(RecordUricAcid.this, "创建尿酸记录失败", Toast.LENGTH_SHORT).show();
+                }
                 dialog.dismiss();
                 RecordUricAcid.this.finish();
             }
@@ -97,7 +99,7 @@ public class RecordUricAcid extends AppCompatActivity {
         cd.show();
     }
 
-    private void submitUricAcid(){
+    private void submitUricAcid() throws Exception {
         int uricAcidVal;
         if (!uricAcidInput.getText().toString().equals("")){
             uricAcidVal = Integer.parseInt(String.valueOf(uricAcidInput.getText()));
@@ -115,16 +117,10 @@ public class RecordUricAcid extends AppCompatActivity {
         Calendar calendar = Calendar.getInstance();
         String dateTime = calendar.getTime().toString();
 
-        uricAcid ua = new uricAcid(dateTime, uricAcidVal);
+        UricAcid ua = new UricAcid(dateTime, uricAcidVal);
         ua.setBloodSugar(bloodSugarVal);
 
-        SQLiteDatabase db = dBhelper.getWritableDatabase();
-        long result = db.insert("UricAcid", null, ua.toContentValues());
-        if (result == -1){
-            Log.i(TAG, "Insertion denied");
-        }else {
-            Log.i(TAG, ua.toContentValues().toString() + "--recorded");
-        }
-        db.close();
+        DBManager dbManager = new DBManager(dBhelper);
+        dbManager.addUA(ua);
     }
 }

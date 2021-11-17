@@ -16,13 +16,13 @@ import java.util.Date;
 import java.util.Locale;
 
 import liang.junxuan.bodymonitoring.R;
-import liang.junxuan.bodymonitoring.item.uricAcid;
+import liang.junxuan.bodymonitoring.item.UricAcid;
 
-public class uaRecyclerViewAdapter extends RecyclerView.Adapter<uaRecyclerViewAdapter.uaRecyclerViewHolder> {
-    private ArrayList<uricAcid> list;
+public class UARecyclerViewAdapter extends RecyclerView.Adapter<UARecyclerViewAdapter.uaRecyclerViewHolder> {
+    private ArrayList<UricAcid> list;
     private Context context;
 
-    public uaRecyclerViewAdapter(ArrayList<uricAcid> l){
+    public UARecyclerViewAdapter(ArrayList<UricAcid> l){
         list = l;
     }
 
@@ -36,7 +36,7 @@ public class uaRecyclerViewAdapter extends RecyclerView.Adapter<uaRecyclerViewAd
 
     @Override
     public void onBindViewHolder(@NonNull uaRecyclerViewHolder holder, int position) {
-        uricAcid ua_item = list.get(position);
+        UricAcid ua_item = list.get(position);
         SimpleDateFormat sdf = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
         Date date = null;
         try {

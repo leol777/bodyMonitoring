@@ -8,13 +8,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class bloodPressure {
+public class BloodPressure {
     private int upperPressure;
     private int lowerPressure;
     private int heartBeat;
     private String dateTime;
+    private int id;
 
-    public bloodPressure(String dt, int up, int low){
+    public BloodPressure(String dt, int up, int low){
         upperPressure = up;
         lowerPressure = low;
         dateTime = dt;
@@ -38,6 +39,14 @@ public class bloodPressure {
 
     public String getDateTime(){
         return dateTime;
+    }
+
+    public void setId(int id){
+        this.id = id;
+    }
+
+    public int getId(){
+        return id;
     }
 
     public ContentValues toContentValues(){

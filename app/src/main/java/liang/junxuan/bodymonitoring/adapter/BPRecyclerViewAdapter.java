@@ -2,13 +2,10 @@ package liang.junxuan.bodymonitoring.adapter;
 
 
 import android.content.Context;
-import android.util.Log;
-import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,16 +13,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
 
 import liang.junxuan.bodymonitoring.R;
-import liang.junxuan.bodymonitoring.item.bloodPressure;
+import liang.junxuan.bodymonitoring.item.BloodPressure;
 
-public class bpRecyclerViewAdapter extends RecyclerView.Adapter<bpRecyclerViewAdapter.bpRecyclerViewHolder> {
-    private ArrayList<bloodPressure> list;
+public class BPRecyclerViewAdapter extends RecyclerView.Adapter<BPRecyclerViewAdapter.bpRecyclerViewHolder> {
+    private ArrayList<BloodPressure> list;
     private Context context;
 
     static class bpRecyclerViewHolder extends RecyclerView.ViewHolder{
@@ -43,7 +39,7 @@ public class bpRecyclerViewAdapter extends RecyclerView.Adapter<bpRecyclerViewAd
         }
     }
 
-    public bpRecyclerViewAdapter(ArrayList<bloodPressure> l){
+    public BPRecyclerViewAdapter(ArrayList<BloodPressure> l){
         list = l;
     }
 
@@ -51,15 +47,15 @@ public class bpRecyclerViewAdapter extends RecyclerView.Adapter<bpRecyclerViewAd
 
     @NonNull
     @Override
-    public bpRecyclerViewAdapter.bpRecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public BPRecyclerViewAdapter.bpRecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
         View view = LayoutInflater.from(context).inflate(R.layout.blood_pressure_item, parent, false);
         return new bpRecyclerViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull bpRecyclerViewAdapter.bpRecyclerViewHolder holder, int position) {
-        bloodPressure bp_item = list.get(position);
+    public void onBindViewHolder(@NonNull BPRecyclerViewAdapter.bpRecyclerViewHolder holder, int position) {
+        BloodPressure bp_item = list.get(position);
         SimpleDateFormat sdf = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
         Date date = null;
         try {
