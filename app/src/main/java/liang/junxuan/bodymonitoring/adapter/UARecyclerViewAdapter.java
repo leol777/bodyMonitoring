@@ -1,10 +1,14 @@
 package liang.junxuan.bodymonitoring.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,7 +20,11 @@ import java.util.Date;
 import java.util.Locale;
 
 import liang.junxuan.bodymonitoring.R;
+import liang.junxuan.bodymonitoring.RecordUricAcid;
+import liang.junxuan.bodymonitoring.ViewBodyData;
+import liang.junxuan.bodymonitoring.dataBase.BodyMonitordbHelper;
 import liang.junxuan.bodymonitoring.item.UricAcid;
+import liang.junxuan.bodymonitoring.util.DBManager;
 
 public class UARecyclerViewAdapter extends RecyclerView.Adapter<UARecyclerViewAdapter.uaRecyclerViewHolder> {
     private ArrayList<UricAcid> list;
@@ -35,8 +43,8 @@ public class UARecyclerViewAdapter extends RecyclerView.Adapter<UARecyclerViewAd
     }
 
     @Override
-    public void onBindViewHolder(@NonNull uaRecyclerViewHolder holder, int position) {
-        UricAcid ua_item = list.get(position);
+    public void onBindViewHolder(@NonNull uaRecyclerViewHolder holder, final int position) {
+        final UricAcid ua_item = list.get(position);
         SimpleDateFormat sdf = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
         Date date = null;
         try {
@@ -57,7 +65,19 @@ public class UARecyclerViewAdapter extends RecyclerView.Adapter<UARecyclerViewAd
 
         holder.dateTiemView.setText(out_date);
         holder.uricAcidView.setText(out_ua);
-        holder.bloodSugarView.setText(out_bs);
+
+        if (out_bs.equals(String.valueOf(-1))){
+            holder.bloodSugarView.setText("无录入");
+        }else {
+            holder.bloodSugarView.setText(out_bs);
+        }
+
+        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                confirmDeleteDialog(ua_item, position);
+            }
+        });
     }
 
     @Override
@@ -65,16 +85,61 @@ public class UARecyclerViewAdapter extends RecyclerView.Adapter<UARecyclerViewAd
         return list.size();
     }
 
+
     static class uaRecyclerViewHolder extends RecyclerView.ViewHolder{
         TextView dateTiemView;
         TextView uricAcidView;
         TextView bloodSugarView;
+
+        Button deleteButton;
+        Button editButton;
 
         public uaRecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
             dateTiemView = itemView.findViewById(R.id.uric_acid_item_date_time);
             uricAcidView = itemView.findViewById(R.id.uric_acid_item_uric_acid);
             bloodSugarView = itemView.findViewById(R.id.uric_acidd_item_blood_sugar);
+
+            deleteButton = itemView.findViewById(R.id.delete_ua_button);
+            editButton = itemView.findViewById(R.id.edit_ua_button);
         }
+    }
+
+    private void confirmDeleteDialog(final UricAcid item, final int position){
+        AlertDialog.Builder cd = new AlertDialog.Builder(context);
+
+        cd.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                try {
+                    deleteUricAcid(item);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(context, "删除尿酸记录失败", Toast.LENGTH_SHORT).show();
+                }
+                list.remove(position);
+                notifyDataSetChanged();
+                dialog.dismiss();
+            }
+        });
+
+        cd.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        cd.setMessage("确认删除该条尿酸记录吗？");
+        cd.setTitle("提示");
+        cd.show();
+
+    }
+
+    private void deleteUricAcid(UricAcid item) throws Exception {
+        BodyMonitordbHelper dBhelper = new BodyMonitordbHelper(context, "BodyMonitoring.db",null,1);
+        DBManager dbManager = new DBManager(dBhelper);
+        dbManager.deleteSingleUA(item);
+
     }
 }

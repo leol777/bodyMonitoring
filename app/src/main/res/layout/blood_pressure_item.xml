@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/item_boundary"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
@@ -32,6 +33,23 @@
         android:id="@+id/blood_pressure_item_heart_beat"
         app:layout_constraintTop_toBottomOf="@+id/blood_pressure_item_lower_pressure"
         app:layout_constraintStart_toStartOf="@+id/blood_pressure_item_date_time"/>
+
+    <Button
+        android:id="@+id/delete_bp_button"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/delete_button"
+        app:layout_constraintTop_toTopOf="@+id/blood_pressure_item_date_time"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <Button
+        android:id="@+id/edit_bp_button"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/edit_button"
+        app:layout_constraintTop_toBottomOf="@+id/delete_bp_button"
+        android:layout_marginTop="15dp"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 
 

@@ -1,11 +1,15 @@
 package liang.junxuan.bodymonitoring.adapter;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,7 +22,9 @@ import java.util.Locale;
 
 
 import liang.junxuan.bodymonitoring.R;
+import liang.junxuan.bodymonitoring.dataBase.BodyMonitordbHelper;
 import liang.junxuan.bodymonitoring.item.BloodPressure;
+import liang.junxuan.bodymonitoring.util.DBManager;
 
 public class BPRecyclerViewAdapter extends RecyclerView.Adapter<BPRecyclerViewAdapter.bpRecyclerViewHolder> {
     private ArrayList<BloodPressure> list;
@@ -30,12 +36,18 @@ public class BPRecyclerViewAdapter extends RecyclerView.Adapter<BPRecyclerViewAd
         TextView lowerBPView;
         TextView heartBeatView;
 
+        Button deleteButton;
+        Button editButton;
+
         public bpRecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
             dateTimeView = itemView.findViewById(R.id.blood_pressure_item_date_time);
             upperBPView = itemView.findViewById(R.id.blood_pressure_item_upper_pressure);
             lowerBPView = itemView.findViewById(R.id.blood_pressure_item_lower_pressure);
             heartBeatView = itemView.findViewById(R.id.blood_pressure_item_heart_beat);
+
+            deleteButton = itemView.findViewById(R.id.delete_bp_button);
+            editButton = itemView.findViewById(R.id.edit_bp_button);
         }
     }
 
@@ -54,8 +66,8 @@ public class BPRecyclerViewAdapter extends RecyclerView.Adapter<BPRecyclerViewAd
     }
 
     @Override
-    public void onBindViewHolder(@NonNull BPRecyclerViewAdapter.bpRecyclerViewHolder holder, int position) {
-        BloodPressure bp_item = list.get(position);
+    public void onBindViewHolder(@NonNull BPRecyclerViewAdapter.bpRecyclerViewHolder holder, final int position) {
+        final BloodPressure bp_item = list.get(position);
         SimpleDateFormat sdf = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
         Date date = null;
         try {
@@ -80,7 +92,19 @@ public class BPRecyclerViewAdapter extends RecyclerView.Adapter<BPRecyclerViewAd
         holder.dateTimeView.setText(out_date);
         holder.lowerBPView.setText(out_lbp);
         holder.upperBPView.setText(out_hbp);
-        holder.heartBeatView.setText(out_hb);
+
+        if (out_hb.equals(String.valueOf(-1))){
+            holder.heartBeatView.setText("无录入");
+        }else {
+            holder.heartBeatView.setText(out_hb);
+        }
+
+        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                confirmDeleteDialog(bp_item, position);
+            }
+        });
     }
 
     @Override
@@ -88,5 +112,39 @@ public class BPRecyclerViewAdapter extends RecyclerView.Adapter<BPRecyclerViewAd
         return list.size();
     }
 
+    private void confirmDeleteDialog(final BloodPressure item, final int position){
+        AlertDialog.Builder cd = new AlertDialog.Builder(context);
 
+        cd.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                try {
+                    deleteBloodPressure(item);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(context, "删除血压记录失败", Toast.LENGTH_SHORT).show();
+                }
+                list.remove(position);
+                notifyDataSetChanged();
+                dialog.dismiss();
+            }
+        });
+
+        cd.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        cd.setMessage("确认删除该条血压记录吗？");
+        cd.setTitle("提示");
+        cd.show();
+    }
+
+    private void deleteBloodPressure(BloodPressure item) throws Exception {
+        BodyMonitordbHelper dBhelper = new BodyMonitordbHelper(context, "BodyMonitoring.db",null,1);
+        DBManager dbManager = new DBManager(dBhelper);
+        dbManager.deleteSingleBP(item);
+    }
 }

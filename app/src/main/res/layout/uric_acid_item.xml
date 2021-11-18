@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/item_boundary"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <TextView
         android:layout_width="wrap_content"
@@ -24,5 +25,22 @@
         android:id="@+id/uric_acidd_item_blood_sugar"
         app:layout_constraintTop_toBottomOf="@+id/uric_acid_item_uric_acid"
         app:layout_constraintStart_toStartOf="@+id/uric_acid_item_date_time"/>
+
+    <Button
+        android:id="@+id/delete_ua_button"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/delete_button"
+        app:layout_constraintTop_toTopOf="@+id/uric_acid_item_date_time"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <Button
+        android:id="@+id/edit_ua_button"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/edit_button"
+        app:layout_constraintTop_toBottomOf="@+id/delete_ua_button"
+        android:layout_marginTop="15dp"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
