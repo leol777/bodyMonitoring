@@ -19,21 +19,35 @@ import liang.junxuan.bodymonitoring.util.DBManager;
 public class ViewBPTableFragment extends Fragment {
     private BodyMonitordbHelper dbHelper;
 
+    private View rootView;
+
+    private DBManager manager;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         dbHelper = new BodyMonitordbHelper(getActivity(), "BodyMonitoring.db", null, 1);
-        View rootView = loadRootView(inflater, container);
+        rootView = loadRootView(inflater, container);
 
-        DBManager db_finder = new DBManager(dbHelper);
+        manager = new DBManager(dbHelper);
 
         RecyclerView recyclerView = rootView.findViewById(R.id.blood_pressure_recycler_view);
-        BPRecyclerViewAdapter adapter = new BPRecyclerViewAdapter(db_finder.findAllBP());
+        BPRecyclerViewAdapter adapter = new BPRecyclerViewAdapter(manager.findAllBP());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        RecyclerView recyclerView = rootView.findViewById(R.id.blood_pressure_recycler_view);
+        BPRecyclerViewAdapter adapter = new BPRecyclerViewAdapter(manager.findAllBP());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+        super.onResume();
     }
 
     protected View loadRootView(LayoutInflater inflater, ViewGroup container){

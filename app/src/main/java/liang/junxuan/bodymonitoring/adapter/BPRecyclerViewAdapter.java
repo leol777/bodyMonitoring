@@ -4,6 +4,7 @@ package liang.junxuan.bodymonitoring.adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +23,11 @@ import java.util.Locale;
 
 
 import liang.junxuan.bodymonitoring.R;
+import liang.junxuan.bodymonitoring.activities.EditBloodPressure;
+import liang.junxuan.bodymonitoring.activities.EditUricAcid;
 import liang.junxuan.bodymonitoring.dataBase.BodyMonitordbHelper;
 import liang.junxuan.bodymonitoring.item.BloodPressure;
+import liang.junxuan.bodymonitoring.item.UricAcid;
 import liang.junxuan.bodymonitoring.util.DBManager;
 
 public class BPRecyclerViewAdapter extends RecyclerView.Adapter<BPRecyclerViewAdapter.bpRecyclerViewHolder> {
@@ -105,6 +109,13 @@ public class BPRecyclerViewAdapter extends RecyclerView.Adapter<BPRecyclerViewAd
                 confirmDeleteDialog(bp_item, position);
             }
         });
+
+        holder.editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                confirmEditDialog(bp_item, position);
+            }
+        });
     }
 
     @Override
@@ -139,6 +150,30 @@ public class BPRecyclerViewAdapter extends RecyclerView.Adapter<BPRecyclerViewAd
 
         cd.setMessage("确认删除该条血压记录吗？");
         cd.setTitle("提示");
+        cd.show();
+    }
+
+    private void confirmEditDialog(final BloodPressure item, int position){
+        AlertDialog.Builder cd = new AlertDialog.Builder(context);
+
+        cd.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(context, EditBloodPressure.class);
+                intent.putExtra("bp_id", item.getId());
+                context.startActivity(intent);
+            }
+        });
+
+        cd.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        cd.setTitle("提示");
+        cd.setMessage("确定修改该血压记录吗？");
         cd.show();
     }
 

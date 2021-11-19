@@ -1,4 +1,4 @@
-package liang.junxuan.bodymonitoring;
+package liang.junxuan.bodymonitoring.activities;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.RadioButton;
 
+import liang.junxuan.bodymonitoring.R;
 import liang.junxuan.bodymonitoring.fragment.ViewBPGraphFragment;
 import liang.junxuan.bodymonitoring.fragment.ViewBPTableFragment;
 import liang.junxuan.bodymonitoring.fragment.ViewUAGraphFragment;

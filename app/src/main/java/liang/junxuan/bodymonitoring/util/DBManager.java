@@ -6,7 +6,6 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-import liang.junxuan.bodymonitoring.MainActivity;
 import liang.junxuan.bodymonitoring.dataBase.BodyMonitordbHelper;
 import liang.junxuan.bodymonitoring.item.BloodPressure;
 import liang.junxuan.bodymonitoring.item.UricAcid;

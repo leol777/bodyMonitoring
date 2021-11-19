@@ -3,6 +3,7 @@ package liang.junxuan.bodymonitoring.adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +21,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import liang.junxuan.bodymonitoring.R;
-import liang.junxuan.bodymonitoring.RecordUricAcid;
-import liang.junxuan.bodymonitoring.ViewBodyData;
+import liang.junxuan.bodymonitoring.activities.EditUricAcid;
 import liang.junxuan.bodymonitoring.dataBase.BodyMonitordbHelper;
 import liang.junxuan.bodymonitoring.item.UricAcid;
 import liang.junxuan.bodymonitoring.util.DBManager;
@@ -76,6 +76,13 @@ public class UARecyclerViewAdapter extends RecyclerView.Adapter<UARecyclerViewAd
             @Override
             public void onClick(View v) {
                 confirmDeleteDialog(ua_item, position);
+            }
+        });
+
+        holder.editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                confirmEditDialog(ua_item, position);
             }
         });
     }
@@ -133,7 +140,30 @@ public class UARecyclerViewAdapter extends RecyclerView.Adapter<UARecyclerViewAd
         cd.setMessage("确认删除该条尿酸记录吗？");
         cd.setTitle("提示");
         cd.show();
+    }
 
+    private void confirmEditDialog(final UricAcid item, int position){
+        AlertDialog.Builder cd = new AlertDialog.Builder(context);
+
+        cd.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(context, EditUricAcid.class);
+                intent.putExtra("ua_id", item.getId());
+                context.startActivity(intent);
+            }
+        });
+
+        cd.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        cd.setTitle("提示");
+        cd.setMessage("确定修改该尿酸吗？");
+        cd.show();
     }
 
     private void deleteUricAcid(UricAcid item) throws Exception {

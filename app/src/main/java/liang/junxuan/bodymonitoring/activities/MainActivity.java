@@ -1,6 +1,5 @@
-package liang.junxuan.bodymonitoring;
+package liang.junxuan.bodymonitoring.activities;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -9,7 +8,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toolbar;
+
+import liang.junxuan.bodymonitoring.R;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         bp_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent record_bp_intent = new Intent(MainActivity.this,RecordBloodPressure.class);
+                Intent record_bp_intent = new Intent(MainActivity.this, RecordBloodPressure.class);
                 startActivity(record_bp_intent);
             }
         });
