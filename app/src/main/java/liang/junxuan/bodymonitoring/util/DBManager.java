@@ -1,10 +1,15 @@
 package liang.junxuan.bodymonitoring.util;
 
+import android.animation.TimeInterpolator;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
 
 import liang.junxuan.bodymonitoring.dataBase.BodyMonitordbHelper;
 import liang.junxuan.bodymonitoring.item.BloodPressure;
@@ -13,6 +18,10 @@ import liang.junxuan.bodymonitoring.item.UricAcid;
 public class DBManager {
     final private String TAG = "DataBaseManager";
     private BodyMonitordbHelper dbHelper;
+
+    public enum Time_Interval{
+        WEEK, MONTH, YEAR
+    }
 
     public DBManager(BodyMonitordbHelper dbHelper){
         this.dbHelper = dbHelper;
@@ -40,6 +49,7 @@ public class DBManager {
             }while (cursor.moveToNext());
         }
         cursor.close();
+        Collections.sort(list);
         return list;
     }
 
@@ -67,7 +77,106 @@ public class DBManager {
         }
         Log.d("ViewBodyData",list.toString());
         cursor.close();
+        Collections.sort(list);
         return list;
+    }
+
+    public ArrayList<BloodPressure> findBPbyTime(Time_Interval time_interval){
+        ArrayList<BloodPressure> allBP= this.findAllBP();
+        Calendar calendar = Calendar.getInstance();
+
+        switch (time_interval){
+            case MONTH:
+                calendar.add(Calendar.MONTH, -1);
+            case WEEK:
+                calendar.add(Calendar.WEEK_OF_YEAR, -1);
+            case YEAR:
+                calendar.add(Calendar.YEAR, -1);
+        }
+
+        Date date = calendar.getTime();
+        long month_ago = date.getTime();
+
+        for (int i = 0; i<allBP.size(); i++){
+            BloodPressure item = allBP.get(i);
+            if (item.getDateTimeInDate().getTime() < month_ago){
+                allBP.remove(i);
+            }else {
+                break;
+            }
+        }
+
+        return allBP;
+    }
+
+    public ArrayList<UricAcid> findUAbyTime(Time_Interval time_interval){
+        ArrayList<UricAcid> allUA = this.findAllUA();
+        Calendar calendar = Calendar.getInstance();
+
+        switch (time_interval){
+            case MONTH:
+                calendar.add(Calendar.MONTH, -1);
+            case WEEK:
+                calendar.add(Calendar.WEEK_OF_YEAR, -1);
+            case YEAR:
+                calendar.add(Calendar.YEAR, -1);
+        }
+
+        Date date = calendar.getTime();
+        long month_ago = date.getTime();
+
+        for (int i = 0; i<allUA.size(); i++){
+            UricAcid item = allUA.get(i);
+            if (item.getDateTimeInDate().getTime() < month_ago){
+                allUA.remove(i);
+            }else {
+                break;
+            }
+        }
+
+        return allUA;
+    }
+
+    public BloodPressure findBPbyId(int id){
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String sql = "select * from BloodPressure where id=?";
+        Cursor cursor = db.rawQuery(sql, new String[]{String.valueOf(id)});
+
+        cursor.moveToFirst();
+
+        int up = cursor.getInt(cursor.getColumnIndex("upperBP"));
+        int low = cursor.getInt(cursor.getColumnIndex("lowerBP"));
+        int hb = cursor.getInt(cursor.getColumnIndex("heartBeat"));
+        String dateTime = cursor.getString(cursor.getColumnIndex("dateTime"));
+
+
+        BloodPressure item = new BloodPressure(dateTime, up, low);
+        item.setHeartBeat(hb);
+        item.setId(id);
+
+        cursor.close();
+
+        return item;
+    }
+
+    public UricAcid findUAbyId(int id){
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String sql = "select * from UricAcid where id=?";
+        Cursor cursor = db.rawQuery(sql, new String[]{String.valueOf(id)});
+
+        cursor.moveToFirst();
+
+        int ua = cursor.getInt(cursor.getColumnIndex("uricAcid"));
+        int bs = cursor.getInt(cursor.getColumnIndex("bloodSugar"));
+        String dateTime = cursor.getString(cursor.getColumnIndex("dateTime"));
+
+        UricAcid item = new UricAcid(dateTime, ua);
+        item.setBloodSugar(bs);
+        item.setId(id);
+
+        cursor.close();
+
+        return item;
     }
 
     public void addUA(UricAcid uricAcid) throws Exception{
