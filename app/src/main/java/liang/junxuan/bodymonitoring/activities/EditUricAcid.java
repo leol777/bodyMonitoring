@@ -53,10 +53,15 @@ public class EditUricAcid extends AppCompatActivity {
 
         ua_id = getIntent().getIntExtra("ua_id", -1);
 
+        dBhelper = new BodyMonitordbHelper(this, "BodyMonitoring.db",null,1);
+        DBManager manager = new DBManager(dBhelper);
+
+        UricAcid original_ua = manager.findUAbyId(ua_id);
+
         datePicker = findViewById(R.id.record_ua_date_picker_button);
         timePicker = findViewById(R.id.record_ua_time_picker_button);
 
-        record_date_time = Calendar.getInstance();
+        record_date_time = DateTimeStringConverter.toCalendarFromDate(original_ua.getDateTimeInDate());
         final int mHourOfDay = record_date_time.get(Calendar.HOUR_OF_DAY);
         final int mMinute = record_date_time.get(Calendar.MINUTE);
         final int mDateOfMonth = record_date_time.get(Calendar.DAY_OF_MONTH);
@@ -64,7 +69,10 @@ public class EditUricAcid extends AppCompatActivity {
         final int mYear = record_date_time.get(Calendar.YEAR);
 
         uricAcidInput = findViewById(R.id.uric_acid_input);
+        uricAcidInput.setText(String.valueOf(original_ua.getUricAcid()));
+
         bloodSugarInput = findViewById(R.id.blood_sugar_input);
+        bloodSugarInput.setText(String.valueOf(original_ua.getBloodSugar()));
 
         dateText = findViewById(R.id.record_ua_date);
         try {
@@ -123,7 +131,6 @@ public class EditUricAcid extends AppCompatActivity {
         });
 
 
-        dBhelper = new BodyMonitordbHelper(this, "BodyMonitoring.db",null,1);
 
     }
 
@@ -135,22 +142,20 @@ public class EditUricAcid extends AppCompatActivity {
         actionBar.setTitle(R.string.edit_uric_acid_val);
 
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.record_form_menu,menu);
+        inflater.inflate(R.menu.edit_form_menu,menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
+            case R.id.cancel_edition:
             case android.R.id.home:
                 this.finish();
                 return true;
-            case R.id.submit_icon:
+            case R.id.confirm_edition:
                 confirmDialog();
                 return true;
-            case R.id.record_view_body_data:
-                Intent intent = new Intent(EditUricAcid.this, ViewBodyData.class);
-                startActivity(intent);
         }
         return true;
     }

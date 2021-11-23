@@ -58,19 +58,29 @@ public class EditBloodPressure extends AppCompatActivity {
 
         bp_id = getIntent().getIntExtra("bp_id", -1);
 
+        dBhelper = new BodyMonitordbHelper(this, "BodyMonitoring.db", null, 1);
+        DBManager manager = new DBManager(dBhelper);
+        BloodPressure original_bp = manager.findBPbyId(bp_id);
+
+        upperBpInput = findViewById(R.id.upper_bp_input);
+        upperBpInput.setText(String.valueOf(original_bp.getUpperPressure()));
+
+        lowerBpInput = findViewById(R.id.lower_bp_input);
+        lowerBpInput.setText(String.valueOf(original_bp.getLowerPressure()));
+
+        heartBeatInput = findViewById(R.id.heart_beat_input);
+        heartBeatInput.setText(String.valueOf(original_bp.getHeartBeat()));
+
+
         datePicker = findViewById(R.id.record_bp_date_picker_button);
         timePicker = findViewById(R.id.record_bp_time_picker_button);
 
-        record_date_time = Calendar.getInstance();
+        record_date_time = DateTimeStringConverter.toCalendarFromDate(original_bp.getDateTimeInDate());
         final int mHourOfDay = record_date_time.get(Calendar.HOUR_OF_DAY);
         final int mMinute = record_date_time.get(Calendar.MINUTE);
         final int mDateOfMonth = record_date_time.get(Calendar.DAY_OF_MONTH);
         final int mMonth = record_date_time.get(Calendar.MONTH);
         final int mYear = record_date_time.get(Calendar.YEAR);
-
-        upperBpInput = findViewById(R.id.upper_bp_input);
-        lowerBpInput = findViewById(R.id.lower_bp_input);
-        heartBeatInput = findViewById(R.id.heart_beat_input);
 
         dateText = findViewById(R.id.record_bp_date);
         try {
@@ -129,7 +139,6 @@ public class EditBloodPressure extends AppCompatActivity {
         });
 
 
-        dBhelper = new BodyMonitordbHelper(this, "BodyMonitoring.db", null, 1);
     }
 
     @Override
@@ -141,22 +150,20 @@ public class EditBloodPressure extends AppCompatActivity {
         actionBar.setTitle(R.string.edit_blood_pressure_val);
 
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.record_form_menu,menu);
+        inflater.inflate(R.menu.edit_form_menu,menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
+            case R.id.cancel_edition:
             case android.R.id.home:
                 this.finish();
                 return true;
-            case R.id.submit_icon:
+            case R.id.confirm_edition:
                 confirmDialog();
                 return true;
-            case R.id.record_view_body_data:
-                Intent intent = new Intent(EditBloodPressure.this, ViewBodyData.class);
-                startActivity(intent);
         }
         return true;
     }

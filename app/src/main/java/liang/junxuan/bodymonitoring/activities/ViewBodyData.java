@@ -11,12 +11,16 @@ import android.view.View;
 import android.widget.RadioButton;
 
 import liang.junxuan.bodymonitoring.R;
+import liang.junxuan.bodymonitoring.dataBase.BodyMonitordbHelper;
 import liang.junxuan.bodymonitoring.fragment.ViewBPGraphFragment;
 import liang.junxuan.bodymonitoring.fragment.ViewBPTableFragment;
 import liang.junxuan.bodymonitoring.fragment.ViewUAGraphFragment;
 import liang.junxuan.bodymonitoring.fragment.ViewUATableFragment;
+import liang.junxuan.bodymonitoring.util.DBManager;
 
 public class ViewBodyData extends AppCompatActivity implements View.OnClickListener{
+    private BodyMonitordbHelper dbHelper;
+    private DBManager manager;
 
     private ViewUATableFragment uaTableFragment;
     private ViewBPTableFragment bpTableFragment;
@@ -32,6 +36,9 @@ public class ViewBodyData extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_body_data);
+
+        dbHelper = new BodyMonitordbHelper(ViewBodyData.this, "BodyMonitoring.db", null, 1);
+        manager = new DBManager(dbHelper);
 
         bindViews();
         initData();
@@ -60,10 +67,10 @@ public class ViewBodyData extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initData(){
-        uaTableFragment = new ViewUATableFragment();
-        bpTableFragment = new ViewBPTableFragment();
-        uaGraphFragment = new ViewUAGraphFragment();
-        bpGraphFragment = new ViewBPGraphFragment();
+        uaTableFragment = new ViewUATableFragment(manager.findAllUA());
+        bpTableFragment = new ViewBPTableFragment(manager.findAllBP());
+        uaGraphFragment = new ViewUAGraphFragment(manager.findAllUA());
+        bpGraphFragment = new ViewBPGraphFragment(manager.findAllBP());
 
         getSupportFragmentManager().beginTransaction().replace(R.id.view_data_fl_container
                 ,bpTableFragment).commit();

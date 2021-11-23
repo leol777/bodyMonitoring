@@ -30,16 +30,16 @@ import liang.junxuan.bodymonitoring.util.DBManager;
 import liang.junxuan.bodymonitoring.item.UricAcid;
 
 public class ViewUAGraphFragment extends Fragment {
-    private BodyMonitordbHelper dbHelper;
-    private DBManager finder;
+    private ArrayList<UricAcid> ua_list;
+
+    public ViewUAGraphFragment(ArrayList<UricAcid> list){
+        ua_list = list;
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        dbHelper = new BodyMonitordbHelper(getActivity(), "BodyMonitoring.db", null, 1);
         View root_view = loadRootView(inflater, container);
-        finder = new DBManager(dbHelper);
-
         GraphView graphView = root_view.findViewById(R.id.view_ua_graph_view);
 
         try {
@@ -56,7 +56,7 @@ public class ViewUAGraphFragment extends Fragment {
     }
 
     private void drawAllUA(GraphView graphView) throws ParseException {
-        ArrayList<UricAcid> list = finder.findAllUA();
+        ArrayList<UricAcid> list = ua_list;
         LineGraphSeries<DataPoint> series = new LineGraphSeries<>();
 
         //Dummy variable to avoid untagable first point bug

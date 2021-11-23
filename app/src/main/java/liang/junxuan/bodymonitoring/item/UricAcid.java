@@ -1,21 +1,29 @@
 package liang.junxuan.bodymonitoring.item;
 
 import android.content.ContentValues;
+import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class UricAcid {
+public class UricAcid implements Comparable{
     private int uricAcid;
     private int bloodSugar;
     private String date_time;
     private int id;
+    private Date date_time_in_date;
 
-    public UricAcid(String dt, int uaVal){
+    public UricAcid(String dt, int uaVal) {
         uricAcid = uaVal;
         date_time = dt;
+        SimpleDateFormat sdf = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+        try {
+            date_time_in_date = sdf.parse(date_time);
+        }catch (ParseException ex){
+            ex.printStackTrace();
+        }
     }
 
     public int getUricAcid(){
@@ -51,8 +59,13 @@ public class UricAcid {
         return values;
     }
 
-    public Date getDateTimeInDate() throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
-        return sdf.parse(this.getDate_time());
+    public Date getDateTimeInDate() {
+        return date_time_in_date;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        UricAcid other_ua = (UricAcid) o;
+        return (int) (this.date_time_in_date.getTime() - other_ua.getDateTimeInDate().getTime());
     }
 }

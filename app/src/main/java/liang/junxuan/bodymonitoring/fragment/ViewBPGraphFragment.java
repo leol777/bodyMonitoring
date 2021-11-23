@@ -31,14 +31,15 @@ import liang.junxuan.bodymonitoring.util.BodyMonitorDataPoint;
 import liang.junxuan.bodymonitoring.util.DBManager;
 
 public class ViewBPGraphFragment extends Fragment {
-    private BodyMonitordbHelper dbHelper;
-    private DBManager finder;
+    private ArrayList<BloodPressure> bp_list;
+
+    public ViewBPGraphFragment(ArrayList<BloodPressure> list){
+        bp_list = list;
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        dbHelper = new BodyMonitordbHelper(getActivity(), "BodyMonitoring.db", null, 1);
-        finder = new DBManager(dbHelper);
         View root_view = loadRootView(inflater, container);
 
         GraphView graphView = root_view.findViewById(R.id.view_bp_graph_view);
@@ -57,7 +58,7 @@ public class ViewBPGraphFragment extends Fragment {
     }
 
     private void drawAllBP(GraphView graphView) throws ParseException {
-        ArrayList<BloodPressure> list = finder.findAllBP();
+        ArrayList<BloodPressure> list = bp_list;
         LineGraphSeries<DataPoint> lower_series = new LineGraphSeries<>();
         LineGraphSeries<DataPoint> upper_series = new LineGraphSeries<>();
 

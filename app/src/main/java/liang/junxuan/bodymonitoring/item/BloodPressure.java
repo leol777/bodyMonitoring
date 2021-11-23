@@ -8,17 +8,24 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class BloodPressure {
+public class BloodPressure implements Comparable {
     private int upperPressure;
     private int lowerPressure;
     private int heartBeat;
     private String dateTime;
     private int id;
+    private Date date_time_in_date;
 
-    public BloodPressure(String dt, int up, int low){
+    public BloodPressure(String dt, int up, int low) {
         upperPressure = up;
         lowerPressure = low;
         dateTime = dt;
+        SimpleDateFormat sdf = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+        try {
+            date_time_in_date = sdf.parse(dt);
+        }catch (ParseException ex){
+            ex.printStackTrace();
+        }
     }
 
     public int getUpperPressure(){
@@ -59,8 +66,13 @@ public class BloodPressure {
         return values;
     }
 
-    public Date getDateTimeInDate() throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
-        return sdf.parse(this.getDateTime());
+    public Date getDateTimeInDate() {
+        return date_time_in_date;
+    }
+
+    @Override
+    public int compareTo(Object other) {
+        BloodPressure other_bp = (BloodPressure) other;
+        return (int) (this.date_time_in_date.getTime() - other_bp.getDateTimeInDate().getTime());
     }
 }

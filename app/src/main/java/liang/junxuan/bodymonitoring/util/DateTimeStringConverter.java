@@ -19,4 +19,10 @@ public class DateTimeStringConverter {
         assert date != null;
         return out_sdf.format(date);
     }
+
+    static public Calendar toCalendarFromDate(Date date){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar;
+    }
 }
