@@ -20,7 +20,7 @@ public class DBManager {
     private BodyMonitordbHelper dbHelper;
 
     public enum Time_Interval{
-        WEEK, MONTH, YEAR
+        WEEK, MONTH, YEAR, ALL
     }
 
     public DBManager(BodyMonitordbHelper dbHelper){
@@ -85,6 +85,8 @@ public class DBManager {
         ArrayList<BloodPressure> allBP= this.findAllBP();
         Calendar calendar = Calendar.getInstance();
 
+        ArrayList<BloodPressure> output = new ArrayList<>();
+
         switch (time_interval){
             case MONTH:
                 calendar.add(Calendar.MONTH, -1);
@@ -100,7 +102,7 @@ public class DBManager {
         for (int i = 0; i<allBP.size(); i++){
             BloodPressure item = allBP.get(i);
             if (item.getDateTimeInDate().getTime() < month_ago){
-                allBP.remove(i);
+                output.add(allBP.get(i));
             }else {
                 break;
             }

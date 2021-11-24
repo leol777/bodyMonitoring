@@ -23,9 +23,11 @@ import liang.junxuan.bodymonitoring.util.DBManager;
 public class ViewBPTableFragment extends Fragment {
     private View rootView;
     private ArrayList<BloodPressure> bp_list;
+    private DBManager.Time_Interval time_interval;
 
-    public ViewBPTableFragment(ArrayList<BloodPressure> list){
+    public ViewBPTableFragment(ArrayList<BloodPressure> list, DBManager.Time_Interval time_interval){
         bp_list = list;
+        this.time_interval = time_interval;
     }
 
     @Nullable
@@ -48,7 +50,15 @@ public class ViewBPTableFragment extends Fragment {
         DBManager manager = new DBManager(dbHelper);
 
         RecyclerView recyclerView = rootView.findViewById(R.id.blood_pressure_recycler_view);
-        BPRecyclerViewAdapter adapter = new BPRecyclerViewAdapter(manager.findAllBP());
+        BPRecyclerViewAdapter adapter;
+
+        if (time_interval == DBManager.Time_Interval.ALL){
+            adapter = new BPRecyclerViewAdapter(manager.findAllBP());
+        }
+        else {
+            adapter = new BPRecyclerViewAdapter(manager.findBPbyTime(time_interval));
+        }
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);

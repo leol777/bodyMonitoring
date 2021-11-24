@@ -27,4 +27,9 @@
     <string name="blood_pressure_table_name_in_db">BloodPressure</string>
     <string name="date">日期</string>
     <string name="time">时间</string>
+    <string name="time_period">时间范围</string>
+    <string name="all">全部</string>
+    <string name="past_year">过去一年</string>
+    <string name="past_month">过去一月</string>
+    <string name="past_week">过去一周</string>
 </resources>

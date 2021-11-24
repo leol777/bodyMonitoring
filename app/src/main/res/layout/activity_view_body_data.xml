@@ -31,6 +31,19 @@
             style="@style/choose_style_button_tag_style"/>
     </RadioGroup>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/all"
+        android:drawableTop="@drawable/ic_baseline_timelapse_24"
+        android:textSize="20sp"
+        android:gravity="center_vertical"
+        android:id="@+id/view_data_time_period_hint_button"
+        app:layout_constraintTop_toBottomOf="@id/view_data_presentation_button_group"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/view_data_fl_container"/>
+
 
 
     <FrameLayout
@@ -38,7 +51,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/view_data_type_button_group"
-        app:layout_constraintTop_toBottomOf="@id/view_data_presentation_button_group" />
+        app:layout_constraintTop_toBottomOf="@id/view_data_time_period_hint_button" />
 
     <RadioGroup
         android:id="@+id/view_data_type_button_group"

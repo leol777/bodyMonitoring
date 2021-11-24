@@ -23,9 +23,11 @@ import liang.junxuan.bodymonitoring.util.DBManager;
 public class ViewUATableFragment extends Fragment {
     private ArrayList<UricAcid> ua_list;
     private View rootView;
+    private DBManager.Time_Interval time_interval;
 
-    public ViewUATableFragment(ArrayList<UricAcid> list){
+    public ViewUATableFragment(ArrayList<UricAcid> list, DBManager.Time_Interval time_interval){
         ua_list = list;
+        this.time_interval = time_interval;
     }
 
     @Nullable
@@ -48,7 +50,14 @@ public class ViewUATableFragment extends Fragment {
         DBManager manager = new DBManager(dbHelper);
 
         RecyclerView recyclerView = rootView.findViewById(R.id.uric_acid_recycler_view);
-        UARecyclerViewAdapter adapter = new UARecyclerViewAdapter(manager.findAllUA());
+        UARecyclerViewAdapter adapter;
+
+        if (time_interval == DBManager.Time_Interval.ALL){
+            adapter = new UARecyclerViewAdapter(manager.findAllUA());
+        }else {
+            adapter = new UARecyclerViewAdapter(manager.findUAbyTime(time_interval));
+        }
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
