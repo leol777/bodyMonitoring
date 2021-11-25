@@ -197,8 +197,7 @@ public class RecordUricAcid extends AppCompatActivity {
             bloodSugarVal = -1;
         }
 
-        Calendar calendar = Calendar.getInstance();
-        String dateTime = calendar.getTime().toString();
+        String dateTime = record_date_time.getTime().toString();
 
         UricAcid ua = new UricAcid(dateTime, uricAcidVal);
         ua.setBloodSugar(bloodSugarVal);

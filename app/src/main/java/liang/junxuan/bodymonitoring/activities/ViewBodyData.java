@@ -196,24 +196,24 @@ public class ViewBodyData extends AppCompatActivity implements View.OnClickListe
     private void initData(){
         uaTableFragmentAll = new ViewUATableFragment(manager.findAllUA(), DBManager.Time_Interval.ALL);
         bpTableFragmentAll = new ViewBPTableFragment(manager.findAllBP(), DBManager.Time_Interval.ALL);
-        uaGraphFragmentAll = new ViewUAGraphFragment(manager.findAllUA());
-        bpGraphFragmentAll = new ViewBPGraphFragment(manager.findAllBP());
+        uaGraphFragmentAll = new ViewUAGraphFragment(manager.findAllUA(), DBManager.Time_Interval.ALL);
+        bpGraphFragmentAll = new ViewBPGraphFragment(manager.findAllBP(), DBManager.Time_Interval.ALL);
 
         uaTableYear = new ViewUATableFragment(manager.findUAbyTime(DBManager.Time_Interval.YEAR), DBManager.Time_Interval.YEAR);
         uaTableMonth = new ViewUATableFragment(manager.findUAbyTime(DBManager.Time_Interval.MONTH), DBManager.Time_Interval.MONTH);
         uaTableWeek = new ViewUATableFragment(manager.findUAbyTime(DBManager.Time_Interval.WEEK), DBManager.Time_Interval.WEEK);
 
-        uaGraphYear = new ViewUAGraphFragment(manager.findUAbyTime(DBManager.Time_Interval.YEAR));
-        uaGraphMonth = new ViewUAGraphFragment(manager.findUAbyTime(DBManager.Time_Interval.MONTH));
-        uaGraphWeek = new ViewUAGraphFragment(manager.findUAbyTime(DBManager.Time_Interval.WEEK));
+        uaGraphYear = new ViewUAGraphFragment(manager.findUAbyTime(DBManager.Time_Interval.YEAR), DBManager.Time_Interval.YEAR);
+        uaGraphMonth = new ViewUAGraphFragment(manager.findUAbyTime(DBManager.Time_Interval.MONTH), DBManager.Time_Interval.MONTH);
+        uaGraphWeek = new ViewUAGraphFragment(manager.findUAbyTime(DBManager.Time_Interval.WEEK), DBManager.Time_Interval.WEEK);
 
         bpTableYear = new ViewBPTableFragment(manager.findBPbyTime(DBManager.Time_Interval.YEAR), DBManager.Time_Interval.YEAR);
         bpTableMonth = new ViewBPTableFragment(manager.findBPbyTime(DBManager.Time_Interval.MONTH), DBManager.Time_Interval.MONTH);
         bpTableWeek = new ViewBPTableFragment(manager.findBPbyTime(DBManager.Time_Interval.WEEK), DBManager.Time_Interval.WEEK);
 
-        bpGraphYear = new ViewBPGraphFragment(manager.findBPbyTime(DBManager.Time_Interval.YEAR));
-        bpGraphMonth = new ViewBPGraphFragment(manager.findBPbyTime(DBManager.Time_Interval.MONTH));
-        bpGraphWeek = new ViewBPGraphFragment(manager.findBPbyTime(DBManager.Time_Interval.WEEK));
+        bpGraphYear = new ViewBPGraphFragment(manager.findBPbyTime(DBManager.Time_Interval.YEAR), DBManager.Time_Interval.YEAR);
+        bpGraphMonth = new ViewBPGraphFragment(manager.findBPbyTime(DBManager.Time_Interval.MONTH), DBManager.Time_Interval.MONTH);
+        bpGraphWeek = new ViewBPGraphFragment(manager.findBPbyTime(DBManager.Time_Interval.WEEK), DBManager.Time_Interval.WEEK);
 
 
 
@@ -246,23 +246,31 @@ public class ViewBodyData extends AppCompatActivity implements View.OnClickListe
                 switch (time_interval){
                     case ALL:
                         replaceFragment(bpTableFragmentAll);
+                        break;
                     case YEAR:
                         replaceFragment(bpTableYear);
+                        break;
                     case MONTH:
                         replaceFragment(bpTableMonth);
+                        break;
                     case WEEK:
                         replaceFragment(bpTableWeek);
+                        break;
                 }
             }else if (rb_graph.isChecked()){
                 switch (time_interval){
                     case ALL:
                         replaceFragment(bpGraphFragmentAll);
+                        break;
                     case YEAR:
                         replaceFragment(bpGraphYear);
+                        break;
                     case MONTH:
                         replaceFragment(bpGraphMonth);
+                        break;
                     case WEEK:
                         replaceFragment(bpGraphWeek);
+                        break;
                 }
             }
         }else if (v.getId() == R.id.view_ua_radio_button){
@@ -270,23 +278,31 @@ public class ViewBodyData extends AppCompatActivity implements View.OnClickListe
                 switch (time_interval){
                     case ALL:
                         replaceFragment(uaTableFragmentAll);
+                        break;
                     case YEAR:
                         replaceFragment(uaTableYear);
+                        break;
                     case MONTH:
                         replaceFragment(uaTableMonth);
+                        break;
                     case WEEK:
                         replaceFragment(uaTableWeek);
+                        break;
                 }
             }else if (rb_graph.isChecked()){
                 switch (time_interval){
                     case ALL:
                         replaceFragment(uaGraphFragmentAll);
+                        break;
                     case YEAR:
                         replaceFragment(uaGraphYear);
+                        break;
                     case MONTH:
                         replaceFragment(uaGraphMonth);
+                        break;
                     case WEEK:
                         replaceFragment(uaGraphWeek);
+                        break;
                 }
             }
         }else if (v.getId() == R.id.view_graph_radio_button){
@@ -294,23 +310,31 @@ public class ViewBodyData extends AppCompatActivity implements View.OnClickListe
                 switch (time_interval){
                     case ALL:
                         replaceFragment(bpGraphFragmentAll);
+                        break;
                     case YEAR:
                         replaceFragment(bpGraphYear);
+                        break;
                     case MONTH:
                         replaceFragment(bpGraphMonth);
+                        break;
                     case WEEK:
                         replaceFragment(bpGraphWeek);
+                        break;
                 }
             }else if (rb_ua.isChecked()){
                 switch (time_interval){
                     case ALL:
                         replaceFragment(uaGraphFragmentAll);
+                        break;
                     case YEAR:
                         replaceFragment(uaGraphYear);
+                        break;
                     case MONTH:
                         replaceFragment(uaGraphMonth);
+                        break;
                     case WEEK:
                         replaceFragment(uaGraphWeek);
+                        break;
                 }
             }
         }else if (v.getId() == R.id.view_table_radio_button){
@@ -318,23 +342,31 @@ public class ViewBodyData extends AppCompatActivity implements View.OnClickListe
                 switch (time_interval){
                     case ALL:
                         replaceFragment(bpTableFragmentAll);
+                        break;
                     case YEAR:
                         replaceFragment(bpTableYear);
+                        break;
                     case MONTH:
                         replaceFragment(bpTableMonth);
+                        break;
                     case WEEK:
                         replaceFragment(bpTableWeek);
+                        break;
                 }
             }else if (rb_ua.isChecked()){
                 switch (time_interval){
                     case ALL:
                         replaceFragment(uaTableFragmentAll);
+                        break;
                     case YEAR:
                         replaceFragment(uaTableYear);
+                        break;
                     case MONTH:
                         replaceFragment(uaTableMonth);
+                        break;
                     case WEEK:
                         replaceFragment(uaTableWeek);
+                        break;
                 }
             }
         }

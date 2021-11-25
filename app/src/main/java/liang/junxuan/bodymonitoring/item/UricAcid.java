@@ -66,6 +66,11 @@ public class UricAcid implements Comparable{
     @Override
     public int compareTo(Object o) {
         UricAcid other_ua = (UricAcid) o;
-        return (int) (this.date_time_in_date.getTime() - other_ua.getDateTimeInDate().getTime());
+        int date_difference = this.date_time_in_date.compareTo(other_ua.getDateTimeInDate());
+        if (date_difference == 0){
+            return uricAcid - other_ua.getUricAcid();
+        }else {
+            return date_difference;
+        }
     }
 }

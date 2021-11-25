@@ -1,5 +1,6 @@
 package liang.junxuan.bodymonitoring.fragment;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,19 +32,26 @@ import liang.junxuan.bodymonitoring.item.UricAcid;
 
 public class ViewUAGraphFragment extends Fragment {
     private ArrayList<UricAcid> ua_list;
+    private DBManager.Time_Interval time_interval;
+    private GraphView graphView;
 
-    public ViewUAGraphFragment(ArrayList<UricAcid> list){
+    public ViewUAGraphFragment(ArrayList<UricAcid> list, DBManager.Time_Interval time_interval){
         ua_list = list;
+        this.time_interval = time_interval;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root_view = loadRootView(inflater, container);
-        GraphView graphView = root_view.findViewById(R.id.view_ua_graph_view);
+        graphView = root_view.findViewById(R.id.view_ua_graph_view);
+
+        if (ua_list.size() == 0){
+            return root_view;
+        }
 
         try {
-            drawAllUA(graphView);
+            drawAllUA(graphView, ua_list);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -55,8 +63,7 @@ public class ViewUAGraphFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_view_ua_graph, container, false);
     }
 
-    private void drawAllUA(GraphView graphView) throws ParseException {
-        ArrayList<UricAcid> list = ua_list;
+    private void drawAllUA(GraphView graphView, ArrayList<UricAcid> list) throws ParseException {
         LineGraphSeries<DataPoint> series = new LineGraphSeries<>();
 
         //Dummy variable to avoid untagable first point bug
@@ -95,5 +102,31 @@ public class ViewUAGraphFragment extends Fragment {
         graphView.setTitle("尿酸历史记录检测图");
         graphView.setTitleColor(R.color.colorPrimary);
         graphView.setTitleTextSize(18);
+    }
+
+    @Override
+    public void onResume() {
+        graphView.removeAllSeries();
+
+        BodyMonitordbHelper dbHelper = new BodyMonitordbHelper(getActivity(), "BodyMonitoring.db", null, 1);
+        DBManager manager = new DBManager(dbHelper);
+        ArrayList<UricAcid> list;
+        if (time_interval == DBManager.Time_Interval.ALL){
+            list = manager.findAllUA();
+        }else {
+            list = manager.findUAbyTime(time_interval);
+        }
+
+        if (list.size() == 0){
+            super.onResume();
+            return;
+        }
+
+        try {
+            drawAllUA(graphView, list);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        super.onResume();
     }
 }

@@ -50,6 +50,7 @@ public class DBManager {
         }
         cursor.close();
         Collections.sort(list);
+        db.close();
         return list;
     }
 
@@ -77,6 +78,7 @@ public class DBManager {
         }
         Log.d("ViewBodyData",list.toString());
         cursor.close();
+        db.close();
         Collections.sort(list);
         return list;
     }
@@ -90,53 +92,56 @@ public class DBManager {
         switch (time_interval){
             case MONTH:
                 calendar.add(Calendar.MONTH, -1);
+                break;
             case WEEK:
                 calendar.add(Calendar.WEEK_OF_YEAR, -1);
+                break;
             case YEAR:
                 calendar.add(Calendar.YEAR, -1);
+                break;
         }
 
-        Date date = calendar.getTime();
-        long month_ago = date.getTime();
+        Date month_ago = calendar.getTime();
 
         for (int i = 0; i<allBP.size(); i++){
             BloodPressure item = allBP.get(i);
-            if (item.getDateTimeInDate().getTime() < month_ago){
-                output.add(allBP.get(i));
-            }else {
-                break;
+            if (item.getDateTimeInDate().compareTo(month_ago) > 0){
+                output.add(item);
             }
         }
 
-        return allBP;
+        return output;
     }
 
     public ArrayList<UricAcid> findUAbyTime(Time_Interval time_interval){
         ArrayList<UricAcid> allUA = this.findAllUA();
         Calendar calendar = Calendar.getInstance();
 
+        ArrayList<UricAcid> output = new ArrayList<>();
+
+
         switch (time_interval){
             case MONTH:
                 calendar.add(Calendar.MONTH, -1);
+                break;
             case WEEK:
                 calendar.add(Calendar.WEEK_OF_YEAR, -1);
+                break;
             case YEAR:
                 calendar.add(Calendar.YEAR, -1);
+                break;
         }
 
-        Date date = calendar.getTime();
-        long month_ago = date.getTime();
+        Date month_ago = calendar.getTime();
 
         for (int i = 0; i<allUA.size(); i++){
             UricAcid item = allUA.get(i);
-            if (item.getDateTimeInDate().getTime() < month_ago){
-                allUA.remove(i);
-            }else {
-                break;
+            if (item.getDateTimeInDate().compareTo(month_ago) > 0){
+                output.add(item);
             }
         }
 
-        return allUA;
+        return output;
     }
 
     public BloodPressure findBPbyId(int id){

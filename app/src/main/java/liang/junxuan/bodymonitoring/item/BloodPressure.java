@@ -73,6 +73,11 @@ public class BloodPressure implements Comparable {
     @Override
     public int compareTo(Object other) {
         BloodPressure other_bp = (BloodPressure) other;
-        return (int) (this.date_time_in_date.getTime() - other_bp.getDateTimeInDate().getTime());
+        int date_difference = this.date_time_in_date.compareTo(other_bp.getDateTimeInDate());
+        if (date_difference == 0){
+            return upperPressure - other_bp.getUpperPressure();
+        }else {
+            return date_difference;
+        }
     }
 }
