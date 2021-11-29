@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -12,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.DataPointInterface;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -21,6 +24,7 @@ import com.jjoe64.graphview.series.Series;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -30,11 +34,14 @@ import liang.junxuan.bodymonitoring.item.BloodPressure;
 import liang.junxuan.bodymonitoring.item.UricAcid;
 import liang.junxuan.bodymonitoring.util.BodyMonitorDataPoint;
 import liang.junxuan.bodymonitoring.util.DBManager;
+import liang.junxuan.bodymonitoring.util.DateTimeStringConverter;
 
 public class ViewBPGraphFragment extends Fragment {
     private ArrayList<BloodPressure> bp_list;
     private DBManager.Time_Interval time_interval;
     private GraphView graphView;
+    private ImageButton cancel_button;
+    private TextView info_window_text;
 
     public ViewBPGraphFragment(ArrayList<BloodPressure> list, DBManager.Time_Interval time_interval){
         bp_list = list;
@@ -47,6 +54,17 @@ public class ViewBPGraphFragment extends Fragment {
         View root_view = loadRootView(inflater, container);
 
         graphView = root_view.findViewById(R.id.view_bp_graph_view);
+
+        info_window_text = requireActivity().findViewById(R.id.info_window_text);
+        cancel_button = requireActivity().findViewById(R.id.cancel_info_window);
+        cancel_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cancel_button.setVisibility(View.GONE);
+                info_window_text.setVisibility(View.GONE);
+            }
+        });
+
 
         if (bp_list.size() == 0){
             return root_view;
@@ -70,21 +88,30 @@ public class ViewBPGraphFragment extends Fragment {
         LineGraphSeries<DataPoint> upper_series = new LineGraphSeries<>();
 
         //Dummy variable to avoid untagable first point bug
-        BodyMonitorDataPoint dummy_dp = new BodyMonitorDataPoint(0,0);
-        lower_series.appendData(dummy_dp, false, list.size()+1);
-        upper_series.appendData(dummy_dp, false, list.size()+1);
+        BodyMonitorDataPoint dummy_dp_upper = new BodyMonitorDataPoint(0,list.get(0).getUpperPressure());
+        BodyMonitorDataPoint dummy_dp_lower = new BodyMonitorDataPoint(0, list.get(0).getLowerPressure());
+        lower_series.appendData(dummy_dp_lower, false, list.size()+1);
+        upper_series.appendData(dummy_dp_upper, false, list.size()+1);
 
-        int i = 1;
+        int i = 0;
         for (BloodPressure item : list){
             BodyMonitorDataPoint low_dp = new BodyMonitorDataPoint(i, item.getLowerPressure());
             low_dp.setDateTime(item.getDateTimeInDate());
+            low_dp.setExtra(item.getUpperPressure());
+
             BodyMonitorDataPoint up_dp = new BodyMonitorDataPoint(i, item.getUpperPressure());
             up_dp.setDateTime(item.getDateTimeInDate());
+            up_dp.setExtra(item.getLowerPressure());
 
             lower_series.appendData(low_dp,false, list.size()+1);
             upper_series.appendData(up_dp,false, list.size()+1);
             i++;
         }
+        graphView.getViewport().setMinX(0);
+        graphView.getViewport().setMaxX(list.size()-1);
+        graphView.getViewport().setXAxisBoundsManual(true);
+        graphView.getViewport().setScalable(true);
+
         lower_series.setDrawDataPoints(true);
         upper_series.setDrawDataPoints(true);
 
@@ -92,6 +119,7 @@ public class ViewBPGraphFragment extends Fragment {
         upper_series.setDataPointsRadius(10);
 
         upper_series.setColor(Color.RED);
+
 
         lower_series.setOnDataPointTapListener(new OnDataPointTapListener() {
             @Override
@@ -101,8 +129,11 @@ public class ViewBPGraphFragment extends Fragment {
                 Date date = dp.getDateTime();
                 assert date != null;
                 String out_date = out_sdf.format(date);
-                Toast.makeText(getActivity(), "低压为："+dataPoint.getY()+ getResources().getString(R.string.blood_pressure_unit)+ " 记录时间："
-                        +out_date, Toast.LENGTH_SHORT).show();
+                info_window_text.setText("高压为："+((BodyMonitorDataPoint) dataPoint).getExtra()+ getResources().getString(R.string.blood_pressure_unit)+ "\n" +
+                        "低压为：" + dataPoint.getY() + getResources().getString(R.string.blood_pressure_unit)+ "\n" +
+                        " 记录时间：" +out_date);
+                info_window_text.setVisibility(View.VISIBLE);
+                cancel_button.setVisibility(View.VISIBLE);
             }
         });
 
@@ -114,14 +145,14 @@ public class ViewBPGraphFragment extends Fragment {
                 Date date = dp.getDateTime();
                 assert date != null;
                 String out_date = out_sdf.format(date);
-                Toast.makeText(getActivity(), "高压为："+dataPoint.getY()+ getResources().getString(R.string.blood_pressure_unit)+ " 记录时间："
-                        +out_date, Toast.LENGTH_SHORT).show();
+                info_window_text.setText("高压为："+dataPoint.getY()+ getResources().getString(R.string.blood_pressure_unit)+ "\n" +
+                        "低压为：" + ((BodyMonitorDataPoint) dataPoint).getExtra() + getResources().getString(R.string.blood_pressure_unit)+ "\n" +
+                        " 记录时间：" +out_date);
+                info_window_text.setVisibility(View.VISIBLE);
+                cancel_button.setVisibility(View.VISIBLE);
             }
         });
 
-        graphView.getViewport().setMinX(1);
-        graphView.getViewport().setMaxX(list.size());
-        graphView.getViewport().setXAxisBoundsManual(true);
 
         graphView.addSeries(lower_series);
         graphView.addSeries(upper_series);
@@ -154,5 +185,19 @@ public class ViewBPGraphFragment extends Fragment {
             e.printStackTrace();
         }
         super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        hide_infoWindow();
+        super.onPause();
+    }
+
+
+
+
+    private void hide_infoWindow(){
+        cancel_button.setVisibility(View.GONE);
+        info_window_text.setVisibility(View.GONE);
     }
 }

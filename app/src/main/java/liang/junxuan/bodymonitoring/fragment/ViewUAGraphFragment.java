@@ -5,10 +5,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.constraintlayout.widget.Group;
 import androidx.fragment.app.Fragment;
 
 import com.jjoe64.graphview.GraphView;
@@ -23,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 import liang.junxuan.bodymonitoring.R;
 import liang.junxuan.bodymonitoring.dataBase.BodyMonitordbHelper;
@@ -34,6 +39,8 @@ public class ViewUAGraphFragment extends Fragment {
     private ArrayList<UricAcid> ua_list;
     private DBManager.Time_Interval time_interval;
     private GraphView graphView;
+    private TextView info_window_text;
+    private ImageButton cancel_button;
 
     public ViewUAGraphFragment(ArrayList<UricAcid> list, DBManager.Time_Interval time_interval){
         ua_list = list;
@@ -45,6 +52,17 @@ public class ViewUAGraphFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root_view = loadRootView(inflater, container);
         graphView = root_view.findViewById(R.id.view_ua_graph_view);
+
+        info_window_text = requireActivity().findViewById(R.id.info_window_text);
+        cancel_button = requireActivity().findViewById(R.id.cancel_info_window);
+        cancel_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cancel_button.setVisibility(View.GONE);
+                info_window_text.setVisibility(View.GONE);
+            }
+        });
+
 
         if (ua_list.size() == 0){
             return root_view;
@@ -67,10 +85,10 @@ public class ViewUAGraphFragment extends Fragment {
         LineGraphSeries<DataPoint> series = new LineGraphSeries<>();
 
         //Dummy variable to avoid untagable first point bug
-        BodyMonitorDataPoint dummy_dp = new BodyMonitorDataPoint(0,0);
+        BodyMonitorDataPoint dummy_dp = new BodyMonitorDataPoint(0,list.get(0).getUricAcid());
         series.appendData(dummy_dp, true, list.size()+1);
 
-        int i = 1;
+        int i = 0;
         for (UricAcid item : list){
             BodyMonitorDataPoint dp = new BodyMonitorDataPoint(i,item.getUricAcid());
             dp.setDateTime(item.getDateTimeInDate());
@@ -89,13 +107,16 @@ public class ViewUAGraphFragment extends Fragment {
                 Date date = dp.getDateTime();
                 assert date != null;
                 String out_date = out_sdf.format(date);
-                Toast.makeText(getActivity(), " 尿酸为："+dp.getY()+ getResources().getString(R.string.uric_acid_unit)+" 记录时间："
-                        +out_date, Toast.LENGTH_SHORT).show();
+                info_window_text.setText(" 尿酸为："+dp.getY()+ getResources().getString(R.string.uric_acid_unit)+ "\n" +
+                        " 记录时间：" +out_date);
+                info_window_text.setVisibility(View.VISIBLE);
+                cancel_button.setVisibility(View.VISIBLE);
             }
+
         });
 
-        graphView.getViewport().setMinX(1);
-        graphView.getViewport().setMaxX(list.size());
+        graphView.getViewport().setMinX(0);
+        graphView.getViewport().setMaxX(list.size()-1);
         graphView.getViewport().setXAxisBoundsManual(true);
 
         graphView.addSeries(series);
@@ -128,5 +149,17 @@ public class ViewUAGraphFragment extends Fragment {
             e.printStackTrace();
         }
         super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        hide_infoWindow();
+        super.onPause();
+    }
+
+
+    private void hide_infoWindow(){
+        cancel_button.setVisibility(View.GONE);
+        info_window_text.setVisibility(View.GONE);
     }
 }
