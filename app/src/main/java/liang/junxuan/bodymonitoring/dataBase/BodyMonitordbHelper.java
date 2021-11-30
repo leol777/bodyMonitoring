@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
 
+import liang.junxuan.bodymonitoring.R;
+
 public class BodyMonitordbHelper extends SQLiteOpenHelper {
     private static final String TAG = "bodyMonitorDataBse";
 
@@ -27,6 +29,11 @@ public class BodyMonitordbHelper extends SQLiteOpenHelper {
 
     public BodyMonitordbHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version){
         super(context, name, factory, version);
+        mContext = context;
+    }
+
+    public BodyMonitordbHelper(Context context, int version){
+        super(context, context.getResources().getString(R.string.database_name), null, version);
         mContext = context;
     }
     @Override
