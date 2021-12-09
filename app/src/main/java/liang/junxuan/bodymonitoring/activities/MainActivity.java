@@ -56,8 +56,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         setRequestGrantPermission();
-        Intent intent = new Intent(this, CityLocatorService.class);
-        startService(intent);
+
 
     }
 

@@ -32,6 +32,15 @@
 
         <service android:name=".services.CityLocatorService" />
         <service android:name=".services.getLocalWeatherService"/>
+
+        <receiver android:name=".broadcast.CityLocatedBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.CityLocatedBroadcast" />
+            </intent-filter>
+        </receiver>
+
+        <meta-data android:name="Weather_Access_key"
+            android:value="fbvwq8e9404pe5mb"/>
     </application>
 
 </manifest>

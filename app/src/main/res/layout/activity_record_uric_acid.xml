@@ -111,5 +111,11 @@
         android:layout_marginStart="20dp"
         />
 
+    <TextView
+        android:id="@+id/record_ua_weather"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

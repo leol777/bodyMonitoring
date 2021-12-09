@@ -3,6 +3,7 @@ package liang.junxuan.bodymonitoring.services;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -41,6 +42,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+import liang.junxuan.bodymonitoring.broadcast.CityLocatedBroadcastReceiver;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -50,7 +52,6 @@ import okhttp3.Response;
 
 public class CityLocatorService extends Service {
     private static final String TAG = "CityLocatorService";
-    private Location location;
 
     private Handler handler;
     private String message;
@@ -58,9 +59,13 @@ public class CityLocatorService extends Service {
 
     @Override
     public void onCreate() {
-        Log.i(TAG, TAG+" onCreated");
         super.onCreate();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
         getLocation();
+        return super.onStartCommand(intent, flags, startId);
     }
 
     private void getLocation() {
@@ -90,13 +95,13 @@ public class CityLocatorService extends Service {
             return;
         }
         assert provider != null;
-        location = locationManager.getLastKnownLocation(provider); // 通过GPS获取位置
+        Location location = locationManager.getLastKnownLocation(provider); // 通过GPS获取位置
         getCity(location);
     }
 
     private void getCity(Location location) {
-        double latitude = location.getLatitude();
-        double longitude = location.getLongitude();
+        final double latitude = location.getLatitude();
+        final double longitude = location.getLongitude();
 
         handler = new android.os.Handler(Looper.getMainLooper());
         final String baiduMapUrl = "http://api.map.baidu.com/geocoder?output=json&location="+latitude+","+longitude;
@@ -128,6 +133,11 @@ public class CityLocatorService extends Service {
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                 editor.putString("city", city);
                                 editor.apply();
+                                Intent intent = new Intent("android.intent.action.CityLocatedBroadcast");
+                                intent.setComponent(new ComponentName(getPackageName(), "liang.junxuan.bodymonitoring.broadcast.CityLocatedBroadcastReceiver"));
+                                intent.putExtra("latitude", latitude);
+                                intent.putExtra("longitude", longitude);
+                                sendBroadcast(intent);
                             }
                         }catch (Exception e){
                             e.printStackTrace();

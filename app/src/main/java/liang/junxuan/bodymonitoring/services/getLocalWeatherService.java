@@ -1,9 +1,12 @@
 package liang.junxuan.bodymonitoring.services;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +21,7 @@ import androidx.annotation.Nullable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -35,7 +39,18 @@ public class getLocalWeatherService extends Service {
 
     @Override
     public void onCreate() {
+        Log.i(TAG, TAG+" onCreated");
         super.onCreate();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.i(TAG, TAG+" onStartCommand");
+        double latitude = intent.getDoubleExtra("latitude", 0);
+        double longitude = intent.getDoubleExtra("longitude", 0);
+
+        getWeather(latitude, longitude);
+        return super.onStartCommand(intent, flags, startId);
     }
 
     @Nullable
@@ -44,13 +59,21 @@ public class getLocalWeatherService extends Service {
         return null;
     }
 
-    private void getWeather(int cityCode){
+    private void getWeather(double lat, double lon) {
         handler = new Handler(getMainLooper());
-        final String weather_url = "";
+        String ak = null;
+        try {
+            ApplicationInfo appInfo = this.getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+            ak = appInfo.metaData.getString("Weather_Access_key");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        final String weather_url = " http://api.yytianqi.com/observe?key=bopi3li1ip93ae0n&city="+lat+","+lon;
+
 
         final OkHttpClient client = new OkHttpClient();
 
-        final Request request = new Request.Builder().build();
+        final Request request = new Request.Builder().url(weather_url).get().build();
 
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -79,14 +102,17 @@ public class getLocalWeatherService extends Service {
                         }else if (response.code() == 203){
                             Toast.makeText(getApplicationContext(), "气象数据库参数错误", Toast.LENGTH_LONG).show();
                         }else {
-                            JSONArray jsonArray = null;
+                            JSONObject jsonObject = null;
                             try {
-                                jsonArray = new JSONArray(message);
+                                jsonObject = new JSONObject(message);
+                                JSONObject data = jsonObject.getJSONObject("data");
+                                Weather weather = new Weather(data);
+                                storeWeather(weather);
+                                Log.i(TAG, data.toString());
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-                            Weather weather = parseWetherJson(jsonArray);
-                            storeWeather(weather);
+
                         }
                     }
                 });
@@ -100,16 +126,18 @@ public class getLocalWeatherService extends Service {
         SharedPreferences.Editor editor = preferences.edit();
 
 
-        editor.putInt("upperTemperature", weather.getUpper_temp());
-        editor.putInt("lowerTemperature", weather.getLower_temp());
-        editor.putInt("humidity", weather.getHumidity());
+        editor.putFloat("temperature", weather.getTemperature());
+        editor.putFloat("humidity", weather.getHumidity());
+        editor.putString("weather_description", weather.getWeather_description());
+        editor.putString("wind", weather.getWind());
 
         editor.apply();
+
+        Intent intent = new Intent("weather_stored");
+        sendBroadcast(intent);
     }
 
-    private Weather parseWetherJson(JSONArray jsonArray ){
-        Weather weather = new Weather(0,0,0);
-        return weather;
 
-    }
 }
+
+

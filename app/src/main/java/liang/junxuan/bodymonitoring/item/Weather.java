@@ -1,21 +1,48 @@
 package liang.junxuan.bodymonitoring.item;
 
-public class Weather {
-    private int upper_temp;
-    private int lower_temp;
-    private int humidity;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-    public Weather(int up, int low, int humidity){
-        upper_temp = up;
-        lower_temp = low;
+public class Weather {
+    private float temperature;
+    private float humidity;
+
+    private String wind;
+    private String weather_description;
+
+    public Weather(float temperature, float humidity, String  wind, String weather_description){
+        this.temperature = temperature;
+        this.wind = wind;
         this.humidity = humidity;
+        this.weather_description = weather_description;
+
     }
 
-    public int getUpper_temp(){return upper_temp;}
+    public Weather(JSONObject jsonObject){
+        try {
+            float temp = (float) jsonObject.getDouble("qw");
+            float humi = (float) jsonObject.getDouble("sd");
+            String des = jsonObject.getString("tq");
+            String wind = jsonObject.getString("fl");
 
-    public int getLower_temp(){return lower_temp;}
+            this.temperature = temp;
+            this.humidity = humi;
+            this.weather_description = des;
+            this.wind = wind;
 
-    public int getHumidity(){
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public float getTemperature(){return temperature;}
+
+    public String getWind(){return wind;}
+
+    public float getHumidity(){
         return humidity;
     }
+
+    public String getWeather_description(){ return weather_description;}
+
 }

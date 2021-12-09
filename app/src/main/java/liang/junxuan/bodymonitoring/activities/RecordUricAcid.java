@@ -6,8 +6,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,11 +30,13 @@ import java.util.Calendar;
 import liang.junxuan.bodymonitoring.R;
 import liang.junxuan.bodymonitoring.dataBase.BodyMonitordbHelper;
 import liang.junxuan.bodymonitoring.item.UricAcid;
+import liang.junxuan.bodymonitoring.services.CityLocatorService;
 import liang.junxuan.bodymonitoring.util.DBManager;
 import liang.junxuan.bodymonitoring.util.DateTimeStringConverter;
 
 public class RecordUricAcid extends AppCompatActivity {
     private final static String TAG = "Record Uric Acid";
+    private UAWeatherRecordedBroadcastReceiver receiver;
 
     private EditText uricAcidInput;
     private EditText bloodSugarInput;
@@ -44,6 +50,8 @@ public class RecordUricAcid extends AppCompatActivity {
     private Calendar record_date_time;
 
     private BodyMonitordbHelper dBhelper;
+
+    private TextView weatherText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,6 +128,14 @@ public class RecordUricAcid extends AppCompatActivity {
 
 
         dBhelper = new BodyMonitordbHelper(this, "BodyMonitoring.db",null,1);
+
+        weatherText = findViewById(R.id.record_ua_weather);
+
+        Intent intent = new Intent(this, CityLocatorService.class);
+        startService(intent);
+
+        receiver = new UAWeatherRecordedBroadcastReceiver(this);
+        receiver.register();
 
     }
 
@@ -204,5 +220,48 @@ public class RecordUricAcid extends AppCompatActivity {
 
         DBManager dbManager = new DBManager(dBhelper);
         dbManager.addUA(ua);
+    }
+
+    @Override
+    protected void onStart() {
+        receiver.register();
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        receiver.unregister();
+        super.onStop();
+    }
+
+
+
+    class UAWeatherRecordedBroadcastReceiver extends BroadcastReceiver {
+        private Context context;
+        public UAWeatherRecordedBroadcastReceiver(Context context){
+            this.context = context;
+        }
+
+        public void register(){
+            IntentFilter filter = new IntentFilter("weather_stored");
+            context.registerReceiver(this, filter);
+
+        }
+
+        public void unregister(){
+            context.unregisterReceiver(this);
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            SharedPreferences preferences = getSharedPreferences("weather", Context.MODE_PRIVATE);
+            String des = preferences.getString("weather_description", "" );
+            String wind = preferences.getString("wind", "");
+            float humidity = preferences.getFloat("humidity", 0);
+            float temp = preferences.getFloat("temperature", 0);
+
+            String weather_text = "今天天气：" + des + "，温度为：" + temp + "，湿度：" + humidity + "，风：" + wind;
+            weatherText.setText(weather_text);
+        }
     }
 }
